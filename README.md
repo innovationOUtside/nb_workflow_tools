@@ -6,6 +6,10 @@ To install:
 
 `pip3 install git+https://github.com/innovationOUtside/nb_workflow_tools`
 
+To upgrade a current installation to the latest repo version without updating dependencies:
+
+`pip3 install --upgrade --no-deps git+https://github.com/innovationOUtside/nb_workflow_tools`
+
 ```
 Usage: tm351zipview [OPTIONS] [FILENAME]...
 
