@@ -505,10 +505,10 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
     download_directory(repository, sha, directory_to_download, outpath,file_processor )
 
     if zip:
-        print('\nZipping into {}/nYou may also want to delete the working directory ({}).'.format(repository, outpath) )
+        print('\nZipping into: {}/nYou may also want to delete the working directory ({}).'.format(repository, outpath) )
         zipper(outpath,repository)
     else:
-        print('\n\nTo zip the downloaded directory, run something like: {}'.format('tm351zip {o} {z}\n\nTo run a notebook processor (OPTIONS: runWithErrors, clearOutput) while zipping: tm351zip {o} {z} --file-processor OPTION\n'.format(o=outpath,z=repository)))
+        print('\n\nTo zip the downloaded directory, run something like: {}'.format('tm351zip {o} {z}\n\nTo run a notebook processor (OPTIONS: runWithErrors, clearOutput) while zipping: tm351zip "{o}" {z} --file-processor OPTION\n'.format(o=outpath,z=repository.name)))
 
      #TODO
      #print('\n\nTo run this command again: {}'.format())
