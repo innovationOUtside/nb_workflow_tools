@@ -313,7 +313,7 @@ def cli_zipview(filename):
         insideZip(f)
 
 
-def _notebookTest(testitems, dir_excludes, outfile=None):
+def _notebookTest(testitems,  outfile=None, dir_excludes=None):
     path=[]
     filename=[]
     for i in testitems:
@@ -339,7 +339,7 @@ def cli_nbtest( exclude_dir, outfile, testitems):
     
     Running `tm351nbtest` without any specified directory or file will assemble tests recursively from the current directory down."""
     testitems = testitems or '.'
-    _notebookTest(testitems, exclude_dir, outfile)
+    _notebookTest(testitems, outfile, exclude_dir )
 
 @click.command()
 @click.option('--file-processor','-r', type=click.Choice(['clearOutput', 'runWithErrors']), help='File processor actions that can be applied to notebooks using `nbconvert`')
