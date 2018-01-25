@@ -453,7 +453,7 @@ DEFAULT_REPO='undercertainty/tm351'
               help='Directory to download repo / repo dir into; default is dir name')
 @click.option('--file-processor', type=click.Choice(['clearOutput', 'runWithErrors']), help='Optionally specify a file processor to be run against downloaded notebooks.')
 @click.option('--zip/--no-zip', default=False, help='Optionally create a zip file of the downloaded repository/directory with the same name as the repository/directory.')
-@click.option('--auth', is_flag=True)
+@click.option('--auth/--no-auth', default=True)
 def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_processor, zip, auth):
     """Download files from a specified branch in a particular git repository.
     
@@ -461,12 +461,12 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
     
     Don't worry that there look to be a lot of arguments - you will be prompted for them if you just run: tm351gitrepos
     """
-    if auth or (github_user):
+    
+    if auth or github_user:
         if not github_user: github_user = click.prompt('\nGithub username')
-        if not password: password = click.prompt('\nGithub password')
+        if not password: password = click.prompt('\nGithub password', hide_input=True)
         github = Github(github_user, password)
-        #Show we're keeping nothing...
-        github_user=None
+        #Show we're keeping no password...
         password = None
         auth = True
     else: github = Github()
@@ -474,8 +474,8 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
 
     if auth:
         user = github.get_user()
-        organisation = github.get_user().get_orgs()[0]
-        print('{} / {}'.format(user, organisation))
+        #organisations = github.get_user().get_orgs()
+        print('Logging into git as {} ({})'.format(github_user, user.name))
     
     repo = repo or DEFAULT_REPO
     repository = github.get_repo(repo)

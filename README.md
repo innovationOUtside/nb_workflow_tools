@@ -109,5 +109,7 @@ Options:
   --currdir / --no-currdir        Process files in current directory
   --subdirs / --no-subdirs        Process files in subdirectories
   --reportlevel INTEGER           Reporting level
+  --auth / --no-auth              By default, run with auth (prompt for
+                                  credentials)
   --help                          Show this message and exit.
 ```
