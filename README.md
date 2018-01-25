@@ -111,5 +111,6 @@ Options:
   --reportlevel INTEGER           Reporting level
   --auth / --no-auth              By default, run with auth (prompt for
                                   credentials)
+  -t, --with-tests                Run tests on notebooks after download
   --help                          Show this message and exit.
 ```

@@ -83,13 +83,14 @@ def notebookTest(path=None, filename=None, dir_excludes=None):
         #Process files in path
         #If we pass a directory name in then the test will be run over all files in the directory
         #py.test accumulates the test responses
+        resps = []
         for singlepath in listify(path):
-            print("Testing in directory: {}".format(singlepath))
+            print("\nTesting in directory: {}".format(singlepath))
             if singlepath=='.':
                 print('**DO NOT test in current directory from a notebook**')
             cmd = '{cmd} {path}'.format(cmd=cmd, path=quote(singlepath))
-            resp = cli_command(cmd)
-        return resp
+            resps.append( cli_command(cmd) )
+        return resps
         
 def notebookProcessor(notebook, mode=None, outpath=None, outfile=None, inplace=True):
     ''' Clear notebook output cells.
@@ -319,18 +320,22 @@ def cli_zipview(filename):
 def _notebookTest(testitems,  outfile=None, dir_excludes=None):
     path=[]
     filename=[]
-    for i in testitems:
+    
+    for i in listify(testitems):
         if os.path.isdir(i):
             path.append(i)
         else:
             filename.append(i)
-    resp = notebookTest(path=path, filename=filename, dir_excludes=dir_excludes)
-    if outfile:
-        with open(outfile, "w") as out:
-            out.write(resp[1])
-        print('Test report written to {}'.format(outfile))
-    else:
-        print(resp[1])
+    resps = notebookTest(path=path, filename=filename, dir_excludes=dir_excludes)
+    if isinstance(resps, tuple): resps = [resps]
+    
+    for resp in resps:
+        if outfile:
+            with open(outfile, "a") as out:
+                out.write(resp[1])
+            print('\nTest report written to {}'.format(outfile))
+        else:
+            print(resp[1])
 
 
 @click.command()
@@ -456,8 +461,8 @@ DEFAULT_REPO='undercertainty/tm351'
               help='Directory to download repo / repo dir into; default is dir name')
 @click.option('--file-processor', type=click.Choice(['clearOutput', 'runWithErrors']), help='Optionally specify a file processor to be run against downloaded notebooks.')
 @click.option('--zip/--no-zip', default=False, help='Optionally create a zip file of the downloaded repository/directory with the same name as the repository/directory.')
-@click.option('--auth/--no-auth', default=True)
-@click.option('--with-tests','-t',is_flag=True)
+@click.option('--auth/--no-auth', default=True, help="By default, run with auth (prompt for credentials)")
+@click.option('--with-tests','-t',is_flag=True, help="Run tests on notebooks after download")
 @click.option('--logfile',type=click.Path(resolve_path=False), help='Path to logfile')
 def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_processor, zip, auth, with_tests, logfile):
     """Download files from a specified branch in a particular git repository.
@@ -513,6 +518,13 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
                             reportlevel=1, logfile=logfile)
         if logfile:
             click.echo('\nLog written to {}'.format(logfile))
+
+    if with_tests:
+        click.echo('\nRunning notebook tests over: {}'.format(outpath))
+        if not logfile: logfile = 'tests.log'
+        _notebookTest(outpath, logfile )
+        click.echo('\nLog written to {}'.format(logfile))
+        
     if zip:
         print('\nZipping into: {}/nYou may also want to delete the working directory ({}).'.format(repository, outpath) )
         zipper(outpath,repository)
