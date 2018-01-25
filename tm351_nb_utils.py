@@ -136,7 +136,7 @@ def directoryProcessor(path,
                        include_hidden=False,
                        dir_excludes=None,
                        file_excludes=None, rmdir=False, currdir=False, subdirs=True,
-                       reportlevel=1):
+                       reportlevel=1, logfile=None):
     ''' Process all the notebooks in one or more directories and
         (optionally) in associated subdirectories.
     
@@ -166,6 +166,9 @@ def directoryProcessor(path,
                     resp = notebookProcessor('/'.join([dirname,filename]), mode=mode, outpath=outpath, inplace=inplace )
                     if reportlevel>0 and resp and resp[0]!=0:
                         print("Error with {}".format('/'.join([dirname,filename])))
+                    if logfile:
+                        with open(logfile, "a") as out:
+                            out.write(resp[1])
 
         #if mode in ['tests', 'clearOutputTest']:
         #    #Tests need to run in original dir in case of file dependencies
@@ -192,7 +195,7 @@ def directoryProcessor(path,
             #Note that subdirs for each directory can be handled automatically
             directoryProcessor(_path,mode, '/'.join([outpath,_path]), inplace,
                                include_hidden,dir_excludes,file_excludes,
-                               rmdir, currdir, subdirs,reportlevel)
+                               rmdir, currdir, subdirs,reportlevel,logfile)
         return
 
     #TO DO - simplify this so we just pass one exclusion type then detect if file or dir?
