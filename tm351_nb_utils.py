@@ -442,19 +442,21 @@ def github_repo_topdirs(repository):
 DEFAULT_REPO='undercertainty/tm351'
 
 @click.command()
-@click.option('--github-user',  help="Your Github username.")
+@click.option('--github-user', '-u',  help="Your Github username.")
 @click.option('--password', hide_input=True,
               confirmation_prompt=False)
-@click.option('--repo', prompt='Repository ({})'.format(DEFAULT_REPO),
+@click.option('--repo','-r', prompt='Repository ({})'.format(DEFAULT_REPO),
               help='Repository name')
-@click.option('--branch',help='Branch or tag to download')
+@click.option('--branch','-b',help='Branch or tag to download')
 @click.option('--directory', help='Directory to download (or: all)')
 @click.option('--savedir',type=click.Path(resolve_path=False),
               help='Directory to download repo / repo dir into; default is dir name')
 @click.option('--file-processor', type=click.Choice(['clearOutput', 'runWithErrors']), help='Optionally specify a file processor to be run against downloaded notebooks.')
 @click.option('--zip/--no-zip', default=False, help='Optionally create a zip file of the downloaded repository/directory with the same name as the repository/directory.')
 @click.option('--auth/--no-auth', default=True)
-def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_processor, zip, auth):
+@click.option('--with-tests','-t',is_flag=True)
+@click.option('--logfile',type=click.Path(resolve_path=False), help='Path to logfile')
+def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_processor, zip, auth, with_tests, logfile):
     """Download files from a specified branch in a particular git repository.
     
     The download can also be limited to just the contents of a specified directory.
