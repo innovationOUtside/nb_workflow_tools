@@ -432,8 +432,8 @@ def download_directory(repository, sha, server_path, outpath='gh_downloads', fil
                     file_out.write(file_data)
                     file_out.close()
                 #logging.error('Error processing %s: %s', content.path, exc)
-            if content.name.endswith('.ipynb') and file_processor in ['clearOutput', 'clearOutputTest','runWithErrors' ]:
-                    notebookProcessor(outpathfile, file_processor)
+            #if content.name.endswith('.ipynb') and file_processor in ['clearOutput', 'clearOutputTest','runWithErrors' ]:
+            #        notebookProcessor(outpathfile, file_processor)
 
 
 def github_repo_branches(repository):
@@ -507,6 +507,12 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
     print(msg)
     download_directory(repository, sha, directory_to_download, outpath,file_processor )
 
+    if file_processor in ['clearOutput', 'clearOutputTest','runWithErrors' ]:
+        click.echo('\nRunning notebook processor: {}'.format(file_processor))
+        directoryProcessor(outpath, mode=file_processor, subdirs=True,
+                            reportlevel=1, logfile=logfile)
+        if logfile:
+            click.echo('\nLog written to {}'.format(logfile))
     if zip:
         print('\nZipping into: {}/nYou may also want to delete the working directory ({}).'.format(repository, outpath) )
         zipper(outpath,repository)
