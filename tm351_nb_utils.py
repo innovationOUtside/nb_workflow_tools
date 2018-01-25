@@ -510,5 +510,6 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
     else:
         print('\n\nTo zip the downloaded directory, run something like: {}'.format('tm351zip {o} {z}\n\nTo run a notebook processor (OPTIONS: runWithErrors, clearOutput) while zipping: tm351zip {o} {z} --file-processor OPTION\n'.format(o=outpath,z=repository)))
 
-     
+     #TODO
+     #print('\n\nTo run this command again: {}'.format())
 
