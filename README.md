@@ -19,6 +19,8 @@ Options:
   --help  Show this message and exit.
 ```
 
+The `tm351zipview` reports four columns: file_size, file compressed size, datetime and filename.
+
 ```
 Usage: tm351zip [OPTIONS] PATH ZIPFILE
 
