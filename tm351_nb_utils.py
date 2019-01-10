@@ -269,7 +269,8 @@ def zipper(dirtozip,zipfilename,
     
 def insideZip(zfn,report=False):
     ''' Look inside a zip file.
-        The report boolean pretty prints a report if True '''
+        The report contains four columns: file_size, file compressed size, datetime and filename.
+        Setting report=True returns a pretty printed report. '''
     if not os.path.isfile(zfn):
         print("\nHmm... {} doesn't seem to be a file?\n".format(zfn))
         return
