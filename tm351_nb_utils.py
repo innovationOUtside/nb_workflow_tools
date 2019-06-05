@@ -402,15 +402,12 @@ def get_sha_for_tag(repository, tag):
         raise ValueError('No Tag or Branch exists with that name')
     return matched_tags[0].commit.sha
 
-#urllib.parse is a hack to address spaces in path names
-#Ref: https://github.com/PyGithub/PyGithub/issues/613
-import urllib.parse
 def download_directory(repository, sha, server_path, outpath='gh_downloads', file_processor=None):
     """
     Download all contents at server_path with commit tag sha in
     the repository.
     """
-    contents = repository.get_dir_contents(urllib.parse.quote(server_path), ref=sha)
+    contents = repository.get_dir_contents(server_path, ref=sha)
     if not os.path.exists(outpath):
         os.makedirs(outpath)
             
@@ -420,8 +417,7 @@ def download_directory(repository, sha, server_path, outpath='gh_downloads', fil
             download_directory(repository, sha, content.path, '/'.join([outpath,content.name]))
         else:
             try:
-                path = urllib.parse.quote(content.path)
-                #print(content.path)
+                path = content.path
                 file_content = repository.get_contents(path, ref=sha)
                 file_data = base64.b64decode(file_content.content)
                 outpathfile='/'.join([outpath,content.name])
