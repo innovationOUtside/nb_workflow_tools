@@ -496,40 +496,49 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
 
     branch_or_tag_to_download = branch or 'master'
     sha = get_sha_for_tag(repository, branch_or_tag_to_download)
-
-    if not directory:
-        print('\nYou can download all directories from this repo (all) or select one:\n\t{}'.format('\n\t'.join(github_repo_topdirs(repository))))
-        directory = click.prompt('Which directory? (all)')
-
-    directory_to_download = '.' if (not directory or directory=='all') else directory
-    outpath = savedir or directory_to_download
-    if outpath == '.' and savedir !='.': outpath=repo.replace('/','_')+'_files'
     
-    msg='\nOkay... downloading {}/{}'.format(repo,directory_to_download ) 
-    if file_processor is not None:
-        msg = msg + ' using notebook processor: {}'.format(file_processor)
-    else: msg = msg + ' with no notebook processing'
-    print(msg)
-    download_directory(repository, sha, directory_to_download, outpath,file_processor )
+    another = ''
+    while another!='-':
+        if not directory:
+            if branch!='master':
+                contents = repository.get_dir_contents('.', ref=sha)
+            else:
+                contents = repository.get_dir_contents('.')
+            print('\nYou can download all directories from this repo (all) or select one:\n\t{}'.format('\n\t'.join(github_repo_topdirs(contents))))
+            directory = click.prompt('Which directory? (all)')
 
-    if file_processor in ['clearOutput', 'clearOutputTest','runWithErrors' ]:
-        click.echo('\nRunning notebook processor: {}'.format(file_processor))
-        directoryProcessor(outpath, mode=file_processor, subdirs=True,
-                            reportlevel=1, logfile=logfile)
-        if logfile:
-            click.echo('\nLog written to {}'.format(logfile))
-
-    if with_tests:
-        click.echo('\nRunning notebook tests over: {}'.format(outpath))
-        if not logfile: logfile = 'tests.log'
-        _notebookTest(outpath, logfile )
-        click.echo('\nLog written to {}'.format(logfile))
+        directory_to_download = '.' if (not directory or directory=='all') else directory
+        outpath = savedir or directory_to_download
+        if outpath == '.' and savedir !='.': outpath=repo.replace('/','_')+'_files'
         
-    if zip:
-        print('\nZipping into: {}/nYou may also want to delete the working directory ({}).'.format(repository, outpath) )
-        zipper(outpath,repository)
-    else:
-        print('\n\nTo zip the downloaded directory, run something like: {}'.format('tm351zip {o} {z}\n\nTo run a notebook processor (OPTIONS: runWithErrors, clearOutput) while zipping: tm351zip "{o}" {z} --file-processor OPTION\n'.format(o=outpath,z=repository.name)))
+        msg='\nOkay... downloading {}/{}'.format(repo,directory_to_download ) 
+        if file_processor is not None:
+            msg = msg + ' using notebook processor: {}'.format(file_processor)
+        else: msg = msg + ' with no notebook processing'
+        print(msg)
+        download_directory(repository, sha, directory_to_download, outpath,file_processor )
+
+        if file_processor in ['clearOutput', 'clearOutputTest','runWithErrors' ]:
+            click.echo('\nRunning notebook processor: {}'.format(file_processor))
+            directoryProcessor(outpath, mode=file_processor, subdirs=True,
+                                reportlevel=1, logfile=logfile)
+            if logfile:
+                click.echo('\nLog written to {}'.format(logfile))
+
+        if with_tests:
+            click.echo('\nRunning notebook tests over: {}'.format(outpath))
+            if not logfile: logfile = 'tests.log'
+            _notebookTest(outpath, logfile )
+            click.echo('\nLog written to {}'.format(logfile))
+            
+        if zip:
+            print('\nZipping into: {}/nYou may also want to delete the working directory ({}).'.format(repository, outpath) )
+            zipper(outpath,repository)
+        else:
+            print('\n\nTo zip the downloaded directory, run something like: {}'.format('tm351zip {o} {z}\n\nTo run a notebook processor (OPTIONS: runWithErrors, clearOutput) while zipping: tm351zip "{o}" {z} --file-processor OPTION\n'.format(o=outpath,z=repository.name)))
+
+        directory=''
+        another = click.prompt('\Download another directory from this branch? (To quit: -)')
 
      #TODO
      #print('\n\nTo run this command again: {}'.format())
