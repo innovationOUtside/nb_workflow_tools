@@ -444,8 +444,8 @@ def download_directory(repository, sha, server_path, outpath='gh_downloads', fil
 def github_repo_branches(repository):
     return [br.name for br in repository.get_branches()]
 
-def github_repo_topdirs(repository):
-    return [i.name for i in repository.get_dir_contents('.') if i.type=='dir']
+def github_repo_topdirs(contents):
+    return [i.name for i in contents if i.type=='dir']
 
 DEFAULT_REPO='undercertainty/tm351'
 
