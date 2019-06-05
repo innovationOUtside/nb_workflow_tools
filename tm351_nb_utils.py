@@ -8,6 +8,7 @@ import os
 import shutil
 import zipfile
 import datetime
+import github
 from tabulate import tabulate
 from shlex import quote
 
@@ -419,9 +420,9 @@ def download_directory(repository, sha, server_path, outpath='gh_downloads', fil
             download_directory(repository, sha, content.path, '/'.join([outpath,content.name]))
         else:
             try:
-                path = content.path
+                path = urllib.parse.quote(content.path)
                 #print(content.path)
-                file_content = repository.get_contents(urllib.parse.quote(path), ref=sha)
+                file_content = repository.get_contents(path, ref=sha)
                 file_data = base64.b64decode(file_content.content)
                 outpathfile='/'.join([outpath,content.name])
                 file_out = open(outpathfile, "wb")
@@ -430,6 +431,9 @@ def download_directory(repository, sha, server_path, outpath='gh_downloads', fil
             except (IOError, github.GithubException) as exc:
                 #If we fail over because of a large blog, use the data api for the download
                 ret,error=exc.args
+                if 'message' in error and error['message']=='Not Found':
+                    print('Hmm... file not found? {}'.format(path))
+                print(ret,error)
                 if error['errors'][0]['code']=='too_large':
                     #print('...large file, trying blob download instead...')
                     file_content = repository.get_git_blob(content.sha)
