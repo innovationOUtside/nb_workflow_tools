@@ -429,8 +429,7 @@ def download_directory(repository, sha, server_path, outpath='gh_downloads', fil
                 ret,error=exc.args
                 if 'message' in error and error['message']=='Not Found':
                     print('Hmm... file not found? {}'.format(path))
-                print(ret,error)
-                if error['errors'][0]['code']=='too_large':
+                elif 'errors' in error and error['errors'][0]['code']=='too_large':
                     #print('...large file, trying blob download instead...')
                     file_content = repository.get_git_blob(content.sha)
                     file_data = base64.b64decode(file_content.content)
