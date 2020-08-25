@@ -61,7 +61,7 @@ def notebookTest(path=None, filename=None, dir_excludes=None):
             return '/'.join([path,filename])
         
     
-    cmd='py.test --no-print-logs '
+    cmd='py.test '
     for d in listify(dir_excludes):
         cmd = cmd + ' --ignore={} '.format(quote(d))
         print("*Not testing in directory: {}*".format(d))
