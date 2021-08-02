@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name="tm351_nb_utils",
-    version='0.0.2',
-    py_modules=['tm351_nb_utils'],
+    name="tm351-nb-utils",
+    version='0.0.3',
+    py_modules=['tm351_nb_utils', 'updaters', 'html2nb'],
     install_requires=[
         'Click',
         'tabulate',
@@ -18,5 +18,7 @@ setup(
         tm351gitrepos=tm351_nb_utils:cli_gitrepos
         tm351nbtest=tm351_nb_utils:cli_nbtest
         tm351nbrun=tm351_nb_utils:cli_nbrun
+        upgrade_empinken_tags = updaters:upgrade_empinken_tags
+        html2ipynb = html2nb:html2ipynb
     ''',
 )

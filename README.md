@@ -116,3 +116,14 @@ Options:
   -t, --with-tests                Run tests on notebooks after download
   --help                          Show this message and exit.
 ```
+
+---
+
+### Empinken updater:
+
+Update tag styles used for empinken cells:
+
+```
+# Recurse on directory path rewriting .ipynb files with new tag style
+upgrade_empinken_tags ./
+```

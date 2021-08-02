@@ -542,4 +542,3 @@ def cli_gitrepos(github_user, password, repo, branch, directory, savedir, file_p
 
      #TODO
      #print('\n\nTo run this command again: {}'.format())
-
