@@ -47,7 +47,9 @@ def upgrade_empinken_tags(path='.'):
 
                     # Dedupe
                     metadata['tags'] = list(set(tags))
-                
+                    if not metadata['tags']:
+                        metadata.pop('tags', None)
+
                 # Validate - exception if we fail
                 nbformat.validate(nb)
 
