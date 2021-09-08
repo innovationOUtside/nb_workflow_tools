@@ -127,3 +127,36 @@ Update tag styles used for empinken cells:
 # Recurse on directory path rewriting .ipynb files with new tag style
 upgrade_empinken_tags ./
 ```
+
+### Notebook Split and Merge Utilities
+
+Simple tools to merge notebooks and split notebooks on a particular separator.
+
+We can merge two or more notebooks with a command of the form: `nb_merge FILENAME1 FILENAME2 ...`
+
+```text
+Usage: nb_merge [OPTIONS] [FILES]...
+
+  Merge two or more notebooks. Note that this may overwrite a pre-existing
+  file.
+
+Options:
+  -o, --outfile PATH
+  --help              Show this message and exit.
+```
+
+We can split a notebook at one or mote split points with a command of the form: `nb_split FILENAME`
+
+By default, the split point is `#--SPLITHERE--` or `# --SPLITHERE--`. It should appear as the only item in either a markdown cell or a code cell.
+
+```text
+Usage: nb_split [OPTIONS] PATH
+
+  Split a notebook at a splitpoint marker. Note that this may overwrite pe-
+  existing files.
+
+Options:
+  --splitter TEXT               String to split on (default: #--SPLITHERE--)
+  --overwrite / --no-overwrite  Overwrite pre-existing files
+  --help                        Show this message and exit.
+```
