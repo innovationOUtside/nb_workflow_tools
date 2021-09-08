@@ -160,3 +160,21 @@ Options:
   --overwrite / --no-overwrite  Overwrite pre-existing files
   --help                        Show this message and exit.
 ```
+
+### Ensure Activity Answer Cells Are Collapsed
+
+Ensure that notebooks in a directory path have activity answers collapsed. This currently relies on heuristics to detect the answer header cell. Specifically, it should be highlighted as a blue activity cell using the `nb_extensin_empinken` activity tool (which adds the `style-activity` tag to a cell) and contains at least some of the following text:
+
+`possibles = ["# Our solution",  "# Answer", "click on the triangle symbol"]`
+
+Usage takes the form: `nb_collapse_activities PATH` and is recursive by default.
+
+```text
+Usage: nb_collapse_activities [OPTIONS] PATH
+
+  Collapse activity answers.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+```
