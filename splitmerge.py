@@ -17,8 +17,6 @@ def listify(item):
 
 
 # Merge notebooks
-#@click.option('--mergefile','-f', multiple=True,type=click.Path(resolve_path=False), help='Exclude specified file')
-
 @click.command()
 @click.option("--outfile","-o", default="merged_notebook.ipynb", type=click.Path(resolve_path=False))
 @click.argument('files', nargs=-1)
