@@ -10,6 +10,20 @@ To upgrade a current installation to the latest repo version without updating de
 
 `pip3 install --upgrade --no-deps git+https://github.com/innovationOUtside/nb_workflow_tools`
 
+
+For other utility toolbelts, see for example:
+
+- [`choldgraf/nbclean`](https://github.com/choldgraf/nbclean)
+
+
+## Tools
+
+A variety of tools are bundled as CLI commands published via the package or informally sketched in various Jupyter notebooks in the `notebooks` directory.
+
+### Zipper
+
+Tools for previewing the files contained in a zip file and creating new zip files.
+
 ```
 Usage: tm351zipview [OPTIONS] [FILENAME]...
 
