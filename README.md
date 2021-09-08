@@ -163,7 +163,7 @@ Options:
 
 ### Ensure Activity Answer Cells Are Collapsed
 
-Ensure that notebooks in a directory path have activity answers collapsed. This currently relies on heuristics to detect the answer header cell. Specifically, it should be highlighted as a blue activity cell using the `nb_extensin_empinken` activity tool (which adds the `style-activity` tag to a cell) and contains at least some of the following text:
+Ensure that notebooks in a directory path have activity answers collapsed using the *Collapsible Headings* classic Jupyter notebook extension. This currently relies on heuristics to detect the answer header cell. Specifically, it should be highlighted as a blue activity cell using the `nb_extensin_empinken` activity tool (which adds the `style-activity` tag to a cell) and contains at least some of the following text:
 
 `possibles = ["# Our solution",  "# Answer", "click on the triangle symbol"]`
 
