@@ -83,6 +83,13 @@ Options:
   --help                          Show this message and exit.
 ```
 
+
+## Testing notebooks
+
+Notebooks are tested using the [`nbval`](https://nbval.readthedocs.io/en/latest/) package.
+
+Running `tm351nbtest` will print out a list of cells where the cell outputs from a new run of the notebook mismatch the original output. Note that you can “escape” cells that generate known errors by adding a cell tag `raises-exception`. You can also force cells to be ignored by tagging them with the `nbval-ignore-output` tag.
+
 ```
 Usage: tm351nbtest [OPTIONS] [TESTITEMS]...
 
