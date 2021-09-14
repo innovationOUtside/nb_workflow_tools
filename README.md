@@ -15,8 +15,7 @@ For other utility toolbelts, see for example:
 
 - [`choldgraf/nbclean`](https://github.com/choldgraf/nbclean)
 
-
-## Tools
+## Tools
 
 A variety of tools are bundled as CLI commands published via the package or informally sketched in various Jupyter notebooks in the `notebooks` directory.
 
@@ -86,7 +85,7 @@ Options:
 
 ## Testing notebooks
 
-Notebooks are tested using the [`nbval`](https://nbval.readthedocs.io/en/latest/) package.
+Notebooks are tested using the [`nbval`](https://nbval.readthedocs.io/en/latest/) package. Notebooks should have pre-run cells you want to test against. Running `tm351nbtest` will rerun the notebooks in the environment you run the command in and compares the cell outputs to the previously run cell outputs. (So if you're testing a Docker containerised environment, install this packahge and run the test from the command line *inside the container*.)
 
 Running `tm351nbtest` will print out a list of cells where the cell outputs from a new run of the notebook mismatch the original output. Note that you can “escape” cells that generate known errors by adding a cell tag `raises-exception`. You can also force cells to be ignored by tagging them with the `nbval-ignore-output` tag.
 
@@ -107,6 +106,9 @@ Options:
                           report on command line.
   --help                  Show this message and exit.
 ```
+
+
+### Running notebooks and cleaning output cells
 
 ```
 Usage: tm351nbrun [OPTIONS] PATH
