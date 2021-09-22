@@ -23,6 +23,9 @@ A variety of tools are bundled as CLI commands published via the package or info
 
 Tools for previewing the files contained in a zip file and creating new zip files.
 
+
+#### Zip file contents preview
+
 ```
 Usage: tm351zipview [OPTIONS] [FILENAME]...
 
@@ -33,6 +36,9 @@ Options:
 ```
 
 The `tm351zipview` reports four columns: file_size, file compressed size, datetime and filename.
+
+
+#### Zip file creator
 
 ```
 Usage: tm351zip [OPTIONS] PATH ZIPFILE
@@ -50,6 +56,8 @@ Options:
   --help                          Show this message and exit.
 ```
 
+
+#### Grab files from Github repo
 
 Note - there is a gotcha trying to connect to Github - using Python on Mac: https://stackoverflow.com/a/42098127/454773
 
