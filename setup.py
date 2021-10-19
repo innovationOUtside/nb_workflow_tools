@@ -2,14 +2,16 @@ from setuptools import setup
 
 setup(
     name="tm351-nb-utils",
-    version='0.0.5',
+    version='0.0.6',
     py_modules=['tm351_nb_utils', 'updaters', 'html2nb', 'splitmerge', 'collapser'],
+    packages=['tools'],
     install_requires=[
         'Click',
         'tabulate',
         'pytest',
         'nbval',
-        'PyGithub'
+        'PyGithub',
+        'beautifulsoup4'
     ],
     entry_points='''
         [console_scripts]
@@ -23,5 +25,6 @@ setup(
         nb_merge = splitmerge:nb_merger
         nb_split = splitmerge:nb_splitter
         nb_collapse_activities = collapser:activity_collapser
+        nb_image_table = tools.cli:imagetable_generate
     ''',
 )
