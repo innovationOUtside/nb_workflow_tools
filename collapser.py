@@ -5,7 +5,7 @@
 # `heading_collapsed=true` metadata element.
 # 
 # Operationally, the extension then adds a `hidden=true` cell metadata element.
-# # Whilst we don't ned to add this, it is perhaps useful if the collapsible heading extension / template
+# # Whilst we don't need to add this, it is perhaps useful if the collapsible heading extension / template
 # is not available, e.g. for Jupyter Book.
 
 import os
