@@ -246,19 +246,21 @@ def directoryProcessor(path,
 #That is, notebooks are processed in place then zipped
 #The notebooks as seen in the dir will reflect those in the zipfile
 #We could modify this behaviour so it does not affect original notebooks?
-def zipper(dirtozip,zipfilename,
+def zipper(dirtozip, zipfilename,
            include_hidden=False,
            dir_excludes=None,
            file_excludes=None, 
            file_processor=None,
-           reportlevel=1, rmdir=False):
+           reportlevel=1, rmdir=False, 
+           zip_append=False):
     ''' Zip the contents of a directory and its subdirectories '''
      
     file_excludes = listify(file_excludes)
     dir_excludes = listify(dir_excludes)
 
+    zip_permission = "a" if zip_append else "w"
     #Create a new/replacement zip file, rather than append if zipfile already exists
-    zf = zipfile.ZipFile(zipfilename, "w", compression=zipfile.ZIP_DEFLATED)
+    zf = zipfile.ZipFile(zipfilename, zip_permission, compression=zipfile.ZIP_DEFLATED)
     
     #Don't zip files of same name as the zip file we are creating
     file_excludes.append(zipfilename)
@@ -313,19 +315,30 @@ def insideZip(zfn,report=False):
 @click.option('--include-hiddenfiles', '-H', is_flag=True, help='Include hidden files')
 @click.option('--exclude-dir', '-X', multiple=True, type=click.Path(resolve_path=False), help='Exclude specified directory')
 @click.option('--exclude-file','-x', multiple=True,type=click.Path(resolve_path=False), help='Exclude specified file')
+@click.option('--zip_append','-a', is_flag=True, help='Add to existing zip file')
 @click.argument('path', type=click.Path(resolve_path=False))
-@click.argument('zipfile', type=click.File('wb'))
-def cli_zip(file_processor,include_hiddenfiles, exclude_dir,exclude_file,path,zipfile):
+#@click.argument('zipfile', type=click.File('wb'))
+@click.argument('zipfile', type=click.Path())
+def cli_zip(file_processor, include_hiddenfiles, exclude_dir, exclude_file, zip_append, path, zipfile):
     """Create a zip file from the contents of a specified directory.
     
     The zipper can optionally run a notebook processor on notebooks before zipping them to check that all cells are run or all cells are cleared.
     """
     print('You must be crazy using this...')
-    zipper(path,zipfile,
-           include_hidden=include_hiddenfiles,
-           dir_excludes=exclude_dir,
-           file_excludes=exclude_file, 
-           file_processor=file_processor)
+
+    if not zip_append:
+        print(f"\nOverwriting any previous {path} file\n")
+    else:
+        print(f"\nAppending zipped files to: {path}\n")
+
+    fn = zipper(path, zipfile,
+                include_hidden=include_hiddenfiles,
+                dir_excludes=exclude_dir,
+                file_excludes=exclude_file, 
+                file_processor=file_processor,
+                zip_append=zip_append)
+
+    print(f"\nZip file: {fn}\n")
 
 @click.command()
 @click.argument('filename', type=click.Path(resolve_path=True),nargs=-1)
