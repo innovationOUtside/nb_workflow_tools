@@ -7,6 +7,7 @@ import click
 import os
 import shutil
 import zipfile
+import tempfile
 import datetime
 import github
 from tabulate import tabulate
@@ -63,15 +64,24 @@ def notebookTest(path=None, filename=None, dir_excludes=None, file_excludes=None
         if not path or path in ['.']: return filename
         if not isinstance(path,list):
             return '/'.join([path,filename])
-        
     
-    cmd='py.test '
+    tmp_fn = "_sanitise_cfg.cfg"
+    tmp_f = open(tmp_fn, "w")
+
+    sanitiser = """[regex1]
+regex: <graphviz.files.Source at 0x[a-z0-9]*>
+replace: <graphviz.files.Source at 0x123>"""
+    tmp_f.write(sanitiser)
+
+    cmd=f'py.test --sanitize-with {tmp_fn} '
+    #cmd=f'py.test '
 
     file_excludes = listify(file_excludes)
 
     for d in listify(dir_excludes):
         cmd = cmd + ' --ignore={} '.format(quote(d))
         print("*Not testing in directory: {}*".format(d))
+
     cmd = cmd+' --nbval '
     ## WARNING - TO DO - if we are running this from a notebook, also exclude path=='.'
     if path is None and filename is None:
@@ -108,6 +118,8 @@ def notebookTest(path=None, filename=None, dir_excludes=None, file_excludes=None
         #        print('**DO NOT test in current directory from a notebook**')
         #    cmd = '{cmd} {path}'.format(cmd=cmd, path=quote(singlepath))
         #    resps.append( cli_command(cmd) )
+        
+        os.unlink(tmp_fn)
         return resps
         
 def notebookProcessor(notebook, mode=None, outpath=None, outfile=None, inplace=True):
