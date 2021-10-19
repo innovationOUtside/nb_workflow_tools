@@ -69,8 +69,17 @@ def notebookTest(path=None, filename=None, dir_excludes=None, file_excludes=None
     tmp_f = open(tmp_fn, "w")
 
     sanitiser = """[regex1]
-regex: <graphviz.files.Source at 0x[a-z0-9]*>
-replace: <graphviz.files.Source at 0x123>"""
+regex: <graphviz.files.Source at [^>]*>
+replace: <graphviz.files.Source>
+
+[regex2]
+regex: CPU times: .*
+replace: CPU times: CPUTIME
+
+[regex3]
+regex: Wall time: .*
+replace: Wall time: WALLTIME
+"""
     tmp_f.write(sanitiser)
 
     cmd=f'py.test --sanitize-with {tmp_fn} '
