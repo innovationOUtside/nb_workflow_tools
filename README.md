@@ -40,7 +40,7 @@ The `tm351zipview` reports four columns: file_size, file compressed size, dateti
 
 #### Zip file creator
 
-```
+```text
 Usage: tm351zip [OPTIONS] PATH ZIPFILE
 
   Create a zip file from the contents of a specified directory.
@@ -53,9 +53,9 @@ Options:
   -H, --include-hiddenfiles       Include hidden files
   -X, --exclude-dir PATH          Exclude specified directory
   -x, --exclude-file PATH         Exclude specified file
+  -a, --zip_append                Add to existing zip file
   --help                          Show this message and exit.
 ```
-
 
 #### Grab files from Github repo
 
