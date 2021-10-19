@@ -203,7 +203,7 @@ def directoryProcessor(path,
     
     if mode is None: return
     
-    if isinstance(path,list):
+    if isinstance(path, list):
         if rmdir:
             shutil.rmtree(outpath, ignore_errors=True)
             #Make sure we only delete the directory on the way in...
@@ -212,7 +212,7 @@ def directoryProcessor(path,
         for _path in path:
             #When provided with multiple directories, process each one separately
             #Note that subdirs for each directory can be handled automatically
-            directoryProcessor(_path,mode, '/'.join([outpath,_path]), inplace,
+            directoryProcessor(_path, mode, '/'.join([outpath, _path]), inplace,
                                include_hidden, dir_excludes, file_excludes,
                                rmdir, currdir, subdirs, reportlevel, logfile)
         return
@@ -230,12 +230,14 @@ def directoryProcessor(path,
         
     #dir_excludes = [] if dir_excludes is None else dir_excludes 
     #file_excludes = [] if file_excludes is None else file_excludes
-
-    if subdirs:
+    if os.path.isfile(path):
+        notebookProcessor(path, mode=mode, outpath=outpath, inplace=inplace )
+    elif subdirs:
         for dirname, subdirs, files in os.walk(path):
             exclude_items(subdirs, dir_excludes, not include_hidden)
             exclude_items(files, file_excludes, not include_hidden)
             _process(outpath)
+    # if passed a single file rather than directory path
     else:
         files=os.listdir(path)
         exclude_items(files, file_excludes, not include_hidden)
@@ -395,7 +397,7 @@ def cli_nbtest( exclude_dir, exclude_file, outfile, testitems):
 @click.option('--subdirs/--no-subdirs',default=True, help='Process files in subdirectories')
 @click.option('--reportlevel', default=1, help='Reporting level')
 @click.argument('path',type=click.Path(resolve_path=False))
-def cli_nbrun(file_processor,outpath,inplace,exclude_dir,exclude_file,include_hidden, rmdir,currdir,subdirs,reportlevel,path):
+def cli_nbrun(file_processor, outpath, inplace, exclude_dir, exclude_file, include_hidden, rmdir, currdir, subdirs, reportlevel, path):
     """Directory processor for notebooks - allows the user to run nbconvert operations on notebooks, such as running all cells or clearing all cells.
     
     To run tests, use: tm351nbtest
