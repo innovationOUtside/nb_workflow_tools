@@ -39,17 +39,21 @@ def exclude_hidden_items(itemlist, exclude_hidden=True):
         for x in rmlist:
             itemlist.remove(x)
             
-def exclude_items(itemlist, excludes, exclude_hidden=True):
+def exclude_items(itemlist, excludes, exclude_hidden=True, ipynb_only=False):
     ''' Exclude items from ziplist '''
-    
+
     for xd in set(itemlist).intersection(excludes):
         itemlist.remove(xd)
+
+    if ipynb_only:
+        for i in [_i for _i in itemlist if not _i.endswith("ipynb")]:
+                itemlist.remove(i)
         
     if exclude_hidden: exclude_hidden_items(itemlist)
     
     
 
-def notebookTest(path=None, filename=None, dir_excludes=None):
+def notebookTest(path=None, filename=None, dir_excludes=None, file_excludes=None):
     ''' Run notebook tests over explicitly named files and directories.
     '''
     
@@ -62,6 +66,9 @@ def notebookTest(path=None, filename=None, dir_excludes=None):
         
     
     cmd='py.test '
+
+    file_excludes = listify(file_excludes)
+
     for d in listify(dir_excludes):
         cmd = cmd + ' --ignore={} '.format(quote(d))
         print("*Not testing in directory: {}*".format(d))
@@ -72,12 +79,12 @@ def notebookTest(path=None, filename=None, dir_excludes=None):
         return cli_command(cmd)
     elif filename:
         #Process file(s) in directory
-        if isinstance(filename,list):
+        if isinstance(filename, list):
             for _filename in filename:
-                cmd = '{cmd} {filename}'.format(cmd=cmd, filename=pathmaker(path,quote(_filename)))
+                cmd = '{cmd} {filename}'.format(cmd=cmd, filename=pathmaker(path, quote(_filename)))
                 resp=cli_command(cmd)
         else:
-            cmd = '{cmd} {filename}'.format(cmd=cmd, filename=pathmaker(path,quote(filename)))
+            cmd = '{cmd} {filename}'.format(cmd=cmd, filename=pathmaker(path, quote(filename)))
             resp=cli_command(cmd)
         return resp
     else:
@@ -86,11 +93,21 @@ def notebookTest(path=None, filename=None, dir_excludes=None):
         #py.test accumulates the test responses
         resps = []
         for singlepath in listify(path):
-            print("\nTesting in directory: {}".format(singlepath))
-            if singlepath=='.':
-                print('**DO NOT test in current directory from a notebook**')
-            cmd = '{cmd} {path}'.format(cmd=cmd, path=quote(singlepath))
-            resps.append( cli_command(cmd) )
+            for dirname, subdirs, files in os.walk(singlepath):
+                exclude_items(subdirs, dir_excludes)
+                exclude_items(files, file_excludes, ipynb_only=True)
+                print('Processing directory: {}'.format(dirname))
+                with click.progressbar(files) as bar:
+                    for filename in bar:
+                        filepathname=os.path.join(dirname, filename)
+                        cmd = '{cmd} {path}'.format(cmd=cmd, path=quote(filepathname))
+                        resps.append( cli_command(cmd) )
+        #for singlepath in listify(path):
+        #    print("\nTesting in directory: {}".format(singlepath))
+        #    if singlepath=='.':
+        #        print('**DO NOT test in current directory from a notebook**')
+        #    cmd = '{cmd} {path}'.format(cmd=cmd, path=quote(singlepath))
+        #    resps.append( cli_command(cmd) )
         return resps
         
 def notebookProcessor(notebook, mode=None, outpath=None, outfile=None, inplace=True):
@@ -196,8 +213,8 @@ def directoryProcessor(path,
             #When provided with multiple directories, process each one separately
             #Note that subdirs for each directory can be handled automatically
             directoryProcessor(_path,mode, '/'.join([outpath,_path]), inplace,
-                               include_hidden,dir_excludes,file_excludes,
-                               rmdir, currdir, subdirs,reportlevel,logfile)
+                               include_hidden, dir_excludes, file_excludes,
+                               rmdir, currdir, subdirs, reportlevel, logfile)
         return
 
     #TO DO - simplify this so we just pass one exclusion type then detect if file or dir?
@@ -319,7 +336,7 @@ def cli_zipview(filename):
         insideZip(f)
 
 
-def _notebookTest(testitems,  outfile=None, dir_excludes=None):
+def _notebookTest(testitems,  outfile=None, dir_excludes=None, file_excludes=None):
     path=[]
     filename=[]
     
@@ -328,7 +345,7 @@ def _notebookTest(testitems,  outfile=None, dir_excludes=None):
             path.append(i)
         else:
             filename.append(i)
-    resps = notebookTest(path=path, filename=filename, dir_excludes=dir_excludes)
+    resps = notebookTest(path=path, filename=filename, dir_excludes=dir_excludes, file_excludes=file_excludes)
     if isinstance(resps, tuple): resps = [resps]
     
     for resp in resps:
@@ -342,14 +359,16 @@ def _notebookTest(testitems,  outfile=None, dir_excludes=None):
 
 @click.command()
 @click.option('--exclude-dir','-X', multiple=True,type=click.Path(resolve_path=False), help='Do not recurse through specified directory when assembling tests.')
+@click.option('--exclude-file','-x', multiple=True,type=click.Path(resolve_path=False), help='Exclude specified file')
 @click.option('--outfile','-o', type=click.Path(resolve_path=False), help='Output report file. Leave this blank to display report on command line.')
 @click.argument('testitems', type=click.Path(resolve_path=False),nargs=-1)
-def cli_nbtest( exclude_dir, outfile, testitems):
+def cli_nbtest( exclude_dir, exclude_file, outfile, testitems):
     """Test specified notebooks and/or the notebooks in a specified directory or directories (`TESTITEMS`) using the `nbdime` plugin for `py.test`.
     
     Running `tm351nbtest` without any specified directory or file will assemble tests recursively from the current directory down."""
     testitems = testitems or '.'
-    _notebookTest(testitems, outfile, exclude_dir )
+    _notebookTest(testitems, outfile, exclude_dir, exclude_file)
+
 
 @click.command()
 @click.option('--file-processor','-r', type=click.Choice(['clearOutput', 'runWithErrors']), help='File processor actions that can be applied to notebooks using `nbconvert`')
