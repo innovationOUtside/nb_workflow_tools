@@ -209,3 +209,17 @@ Options:
   --recursive / --no-recursive  Recursive search of directories.
   --help                        Show this message and exit.
 ```
+
+### Ensure Tags Toolbar is Collapsed
+
+Ensure that notebooks have the tags toolbar view collapsed:
+
+```text
+Usage: nb_collapse_tagstoolbar [OPTIONS] PATH
+
+  Collapse tags toolbar.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+```
