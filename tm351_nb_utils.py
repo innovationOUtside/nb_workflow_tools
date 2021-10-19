@@ -65,9 +65,6 @@ def notebookTest(path=None, filename=None, dir_excludes=None, file_excludes=None
         if not isinstance(path,list):
             return '/'.join([path,filename])
     
-    tmp_fn = "_sanitise_cfg.cfg"
-    tmp_f = open(tmp_fn, "w")
-
     sanitiser = """[regex1]
 regex: <graphviz.files.Source at [^>]*>
 replace: <graphviz.files.Source>
@@ -80,7 +77,9 @@ replace: CPU times: CPUTIME
 regex: Wall time: .*
 replace: Wall time: WALLTIME
 """
-    tmp_f.write(sanitiser)
+    tmp_fn = "_sanitise_cfg.cfg"
+    with open(tmp_fn, "w") as f:
+        f.write(sanitiser)
 
     cmd=f'py.test --sanitize-with {tmp_fn} '
     #cmd=f'py.test '
