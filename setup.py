@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="tm351-nb-utils",
-    version='0.0.7',
+    version='0.0.8',
     py_modules=['tm351_nb_utils', 'updaters', 'html2nb', 'splitmerge', 'collapser'],
     packages=['tools'],
     install_requires=[
@@ -25,6 +25,7 @@ setup(
         nb_merge = splitmerge:nb_merger
         nb_split = splitmerge:nb_splitter
         nb_collapse_activities = collapser:activity_collapser
+        nb_collapse_tagstoolbar = tools.tags_collapser:tag_toolbar_collapser
         nb_image_table = tools.cli:imagetable_generate
     ''',
 )
