@@ -76,13 +76,17 @@ replace: CPU times: CPUTIME
 [regex3]
 regex: Wall time: .*
 replace: Wall time: WALLTIME
-"""
-    tmp_fn = "_sanitise_cfg.cfg"
-    with open(tmp_fn, "w") as f:
-        f.write(sanitiser)
 
-    cmd=f'py.test --sanitize-with {tmp_fn} '
-    #cmd=f'py.test '
+[regex4]
+regex: .* per loop \(mean ± std. dev. of .* runs, .* loops each\)
+replace: TIMEIT_REPORT
+"""
+    #tmp_fn = "_sanitise_cfg.cfg"
+    #with open(tmp_fn, "w") as f:
+    #    f.write(sanitiser)
+
+    #cmd=f'py.test --nbval-sanitize-with {tmp_fn} '
+    cmd=f'py.test '
 
     file_excludes = listify(file_excludes)
 
@@ -301,7 +305,7 @@ def zipper(dirtozip, zipfilename,
                 if file_processor in ['clearOutput', 'runWithErrors'] and filename.endswith('.ipynb'):
                     #This introduces side effects - notebooks are processed in current path
                     #Should we do this in a tmpfile?
-                    notebookProcessor(filepathname, mode=file_processor,inplace=True)
+                    notebookProcessor(filepathname, mode=file_processor, inplace=True)
                 zf.write(filepathname)
     zf.close()
     
