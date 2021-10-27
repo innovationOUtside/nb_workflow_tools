@@ -291,22 +291,26 @@ def zipper(dirtozip, zipfilename,
     #Don't zip files of same name as the zip file we are creating
     file_excludes.append(zipfilename)
 
-    #https://stackoverflow.com/a/31779538/454773
-    for dirname, subdirs, files in os.walk(dirtozip):
-        exclude_items(subdirs, dir_excludes, not include_hidden)
-        exclude_items(files, file_excludes, not include_hidden)
-        print('Processing directory: {}'.format(dirname))
-        zf.write(dirname)
-        with click.progressbar(files) as bar:
-            for filename in bar:
-                if reportlevel>1:print(filename)
-                filepathname=os.path.join(dirname, filename)
-                #There is no point using 'run': if there is an error, nbconvert will fail
-                if file_processor in ['clearOutput', 'runWithErrors'] and filename.endswith('.ipynb'):
-                    #This introduces side effects - notebooks are processed in current path
-                    #Should we do this in a tmpfile?
-                    notebookProcessor(filepathname, mode=file_processor, inplace=True)
-                zf.write(filepathname)
+    # if we have just a single file to zip and not a dir, zip that
+    if os.path.isfile(dirtozip):
+        zf.write(dirtozip)
+    elif os.path.isdir(dirtozip):
+        #https://stackoverflow.com/a/31779538/454773
+        for dirname, subdirs, files in os.walk(dirtozip):
+            exclude_items(subdirs, dir_excludes, not include_hidden)
+            exclude_items(files, file_excludes, not include_hidden)
+            print('Processing directory: {}'.format(dirname))
+            zf.write(dirname)
+            with click.progressbar(files) as bar:
+                for filename in bar:
+                    if reportlevel>1:print(filename)
+                    filepathname=os.path.join(dirname, filename)
+                    #There is no point using 'run': if there is an error, nbconvert will fail
+                    if file_processor in ['clearOutput', 'runWithErrors'] and filename.endswith('.ipynb'):
+                        #This introduces side effects - notebooks are processed in current path
+                        #Should we do this in a tmpfile?
+                        notebookProcessor(filepathname, mode=file_processor, inplace=True)
+                    zf.write(filepathname)
     zf.close()
     
     #Is this too risky?!
@@ -353,9 +357,9 @@ def cli_zip(file_processor, include_hiddenfiles, exclude_dir, exclude_file, zip_
     print('You must be crazy using this...')
 
     if not zip_append:
-        print(f"\nOverwriting any previous {path} file\n")
+        print(f"\nOverwriting any previous {zipfile} file\n")
     else:
-        print(f"\nAppending zipped files to: {path}\n")
+        print(f"\nAppending zipped files to: {zipfile}\n")
 
     fn = zipper(path, zipfile,
                 include_hidden=include_hiddenfiles,
