@@ -381,12 +381,12 @@ def cli_zipview(filename, warnings, quiet):
     for f in listify(filename):
         zip_contents.append((f, insideZip(f)))
 
-    if warnings:
-        print("\n\n====== Zip file quality report ======\n")
+    if warnings and zip_contents:
         for (zn, item) in zip_contents:
+            print(f"\n\n====== Zip file quality report: {zn} ======\n")
             for record in item:
                 if record[1] > 1e6:
-                    print(f"WARNING: \"{zn}\": looks quite large file ({humanize.naturalsize(record[0])} unzipped, {humanize.naturalsize(record[1])} compressed)")
+                    print(f"WARNING: \"{record[3]}\" looks quite large file ({humanize.naturalsize(record[0])} unzipped, {humanize.naturalsize(record[1])} compressed)")
                 for _path in record[3].split('/'):
                     if len(_path) > 50:
                         print(f"ERROR: the filepath element \"{_path}\" in \"{record[3]}\" is too long (max. 50 chars)")
