@@ -38,6 +38,27 @@ Options:
 
 The `tm351zipview` reports four columns: file_size, file compressed size, datetime and filename. If you select `-w` various advisory notices will be displayed about the zip file contents (eg overlong filenames, large files, hidden files).
 
+The warnings report takes the following form:
+
+```text
+====== Zip file quality report: /Users/tonyhirst/Documents/GitHub/tm351-undercertainty/notebooks/tm351/test1.zip ======
+
+ERROR: the filepath element "11.A SQL Data Investigation Worked Example (optional).ipynb" in "Part 11 Notebooks/11.A SQL Data Investigation Worked Example (optional).ipynb" is too long (max. 50 chars)
+WARNING: "Part 11 Notebooks/.DS_Store" is a hidden file/directory (do you really need it in the zip file?)
+ERROR: the filepath element "11.A SQL Data Investigation Worked Example (optional).ipynb" in "Part 11 Notebooks/11.A SQL Data Investigation Worked Example (optional).ipynb" is too long (max. 50 chars)
+WARNING: "Part 11 Notebooks/.delme" is a hidden file/directory (do you really need it in the zip file?)
+WARNING: "Part 11 Notebooks/.ipynb_checkpoints/" is a hidden file/directory (do you really need it in the zip file?)
+WARNING: "Part 11 Notebooks/.ipynb_checkpoints/11.2 subqueries as value and set-checkpoint.ipynb" is a hidden file/directory (do you really need it in the zip file?)
+WARNING: "Part 11 Notebooks/sql_movie_data/people.csv": looks quite large file (20.7 MB unzipped, 7.8 MB compressed)
+WARNING: "Part 11 Notebooks/sql_movie_data/cast_members.csv": looks quite large file (9.5 MB unzipped, 3.5 MB compressed)
+WARNING: "Part 11 Notebooks/sql_movie_data/people-clean-dates.csv": looks quite large file (20.9 MB unzipped, 7.8 MB compressed)
+WARNING: "Part 11 Notebooks/sql_movie_data/movies.csv": looks quite large file (5.3 MB unzipped, 2.3 MB compressed)
+WARNING: "Part 11 Notebooks/sql_movie_data/crew.csv": looks quite large file (10.2 MB unzipped, 2.3 MB compressed)
+
+===========================
+
+```
+
 
 #### Zip file creator
 
