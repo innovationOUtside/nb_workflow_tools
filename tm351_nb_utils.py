@@ -7,7 +7,7 @@ import click
 import os
 import shutil
 import zipfile
-import tempfile
+import humanize
 import datetime
 import github
 from tabulate import tabulate
@@ -317,7 +317,7 @@ def zipper(dirtozip, zipfilename,
     #if rmdir: shutil.rmtree(dirtozip, ignore_errors=True)
     return zipfilename
     
-def insideZip(zfn,report=False):
+def insideZip(zfn, report=True):
     ''' Look inside a zip file.
         The report contains four columns: file_size, file compressed size, datetime and filename.
         Setting report=True returns a pretty printed report. '''
@@ -371,13 +371,28 @@ def cli_zip(file_processor, include_hiddenfiles, exclude_dir, exclude_file, zip_
     print(f"\nZip file: {fn}\n")
 
 @click.command()
+@click.option('--quiet', '-q', is_flag=True, help='Suppress the report.')
+@click.option('--warnings', '-w', is_flag=True, help='Display warnings')
 @click.argument('filename', type=click.Path(resolve_path=True),nargs=-1)
-def cli_zipview(filename):
+def cli_zipview(filename, warnings, quiet):
     """List the contents of one or more specified zipfiles.
     """
+    zip_contents = []
     for f in listify(filename):
-        insideZip(f)
+        zip_contents.append((f, insideZip(f)))
 
+    if warnings:
+        print("\n\n====== Zip file quality report ======\n")
+        for (zn, item) in zip_contents:
+            for record in item:
+                if record[1] > 1e6:
+                    print(f"WARNING: \"{zn}\": looks quite large file ({humanize.naturalsize(record[0])} unzipped, {humanize.naturalsize(record[1])} compressed)")
+                for _path in record[3].split('/'):
+                    if len(_path) > 50:
+                        print(f"ERROR: the filepath element \"{_path}\" in \"{record[3]}\" is too long (max. 50 chars)")
+                    if _path.startswith("."):
+                        print(f"WARNING: \"{record[3]}\" is a hidden file/directory (do you really need it in the zip file?)")
+        print("\n===========================\n\n")
 
 def _notebookTest(testitems,  outfile=None, dir_excludes=None, file_excludes=None):
     path=[]

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="tm351-nb-utils",
-    version='0.0.9',
+    version='0.0.10',
     py_modules=['tm351_nb_utils', 'updaters', 'html2nb', 'splitmerge', 'collapser'],
     packages=['tools'],
     install_requires=[
@@ -11,7 +11,8 @@ setup(
         'pytest',
         'nbval',
         'PyGithub',
-        'beautifulsoup4'
+        'beautifulsoup4',
+        'humanize'
     ],
     entry_points='''
         [console_scripts]

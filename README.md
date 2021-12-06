@@ -32,10 +32,11 @@ Usage: tm351zipview [OPTIONS] [FILENAME]...
   List the contents of one or more specified zipfiles.
 
 Options:
-  --help  Show this message and exit.
+  --warnings / -w   Display warnings
+  --help            Show this message and exit.
 ```
 
-The `tm351zipview` reports four columns: file_size, file compressed size, datetime and filename.
+The `tm351zipview` reports four columns: file_size, file compressed size, datetime and filename. If you select `-w` various advisory notices will be displayed about the zip file contents (eg overlong filenames, large files, hidden files).
 
 
 #### Zip file creator
