@@ -245,3 +245,17 @@ Options:
   --recursive / --no-recursive  Recursive search of directories.
   --help                        Show this message and exit.
 ```
+
+### Clean Cell Metadata Tag
+
+Remove metadata object from cell metadata by key.
+
+```text
+Usage: nb_cell_metadata_strip [OPTIONS] PATH KEY
+
+  Clean metadata from cell.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+```
