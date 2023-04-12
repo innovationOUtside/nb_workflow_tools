@@ -248,7 +248,7 @@ Options:
 
 ### Clean Cell Metadata Tag
 
-Remove metadata object from cell metadata by key.
+Remove metadata object from cell metadata by key, eg `nbdime-conflicts` or `scrolled`
 
 ```text
 Usage: nb_cell_metadata_strip [OPTIONS] PATH KEY
