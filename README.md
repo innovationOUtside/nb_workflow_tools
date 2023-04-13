@@ -259,3 +259,18 @@ Options:
   --recursive / --no-recursive  Recursive search of directories.
   --help                        Show this message and exit.
 ```
+
+## Autotag Figure Cells
+
+Autotag figure output code cells in pre-run notebooks (default tag: `nbval-figure`)
+
+```text
+Usage: nb_cell_figure_tagger [OPTIONS] PATH
+
+  Autotag figure output cell.
+
+Options:
+  -t, --tag TEXT                Tag to label figure output cells.
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+  ```
