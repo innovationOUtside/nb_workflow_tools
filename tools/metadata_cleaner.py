@@ -29,7 +29,6 @@ def _process(p, key):
             nbformat.write(nb, p.open('w'), nbformat.NO_CONVERT)
 
 
-
 @click.command()
 @click.argument('path', type=click.Path(resolve_path=False))
 @click.argument('key', type=str)

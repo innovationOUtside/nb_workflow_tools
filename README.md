@@ -10,7 +10,6 @@ To upgrade a current installation to the latest repo version without updating de
 
 `pip3 install --upgrade --no-deps git+https://github.com/innovationOUtside/nb_workflow_tools`
 
-
 For other utility toolbelts, see for example:
 
 - [`choldgraf/nbclean`](https://github.com/choldgraf/nbclean)
@@ -23,10 +22,9 @@ A variety of tools are bundled as CLI commands published via the package or info
 
 Tools for previewing the files contained in a zip file and creating new zip files.
 
-
 #### Zip file contents preview
 
-```
+```text
 Usage: tm351zipview [OPTIONS] [FILENAME]...
 
   List the contents of one or more specified zipfiles.
@@ -59,7 +57,6 @@ WARNING: "Part 11 Notebooks/sql_movie_data/crew.csv": looks quite large file (10
 
 ```
 
-
 #### Zip file creator
 
 ```text
@@ -83,7 +80,7 @@ Options:
 
 Note - there is a gotcha trying to connect to Github - using Python on Mac: https://stackoverflow.com/a/42098127/454773
 
-```
+```text
 Usage: tm351gitrepos [OPTIONS]
 
   Download files from a specfied branch in a particular git repository.
@@ -112,14 +109,13 @@ Options:
   --help                          Show this message and exit.
 ```
 
-
 ## Testing notebooks
 
 Notebooks are tested using the [`nbval`](https://nbval.readthedocs.io/en/latest/) package. Notebooks should have pre-run cells you want to test against. Running `tm351nbtest` will rerun the notebooks in the environment you run the command in and compares the cell outputs to the previously run cell outputs. (So if you're testing a Docker containerised environment, install this packahge and run the test from the command line *inside the container*.)
 
 Running `tm351nbtest` will print out a list of cells where the cell outputs from a new run of the notebook mismatch the original output. Note that you can “escape” cells that generate known errors by adding a cell tag `raises-exception`. You can also force cells to be ignored by tagging them with the `nbval-ignore-output` tag.
 
-```
+```text
 Usage: tm351nbtest [OPTIONS] [TESTITEMS]...
 
   Test specified notebooks and/or the notebooks in a specified directory 
@@ -137,10 +133,9 @@ Options:
   --help                  Show this message and exit.
 ```
 
-
 ### Running notebooks and cleaning output cells
 
-```
+```text
 Usage: tm351nbrun [OPTIONS] PATH
 
   Directory processor for notebooks - allows the user to run nbconvert
@@ -172,11 +167,11 @@ Options:
 
 ---
 
-### Empinken updater:
+### Empinken updater
 
 Update tag styles used for empinken cells:
 
-```
+```text
 # Recurse on directory path rewriting .ipynb files with new tag style
 upgrade_empinken_tags ./
 ```
@@ -273,4 +268,4 @@ Options:
   -t, --tag TEXT                Tag to label figure output cells.
   --recursive / --no-recursive  Recursive search of directories.
   --help                        Show this message and exit.
-  ```
+```

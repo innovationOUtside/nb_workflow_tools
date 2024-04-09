@@ -1,4 +1,4 @@
-# # Simple Routine to clear a ky from metadata
+# # Simple Routine to clear a key from metadata
 import os
 from tm351_nb_utils import exclude_hidden_items
 
