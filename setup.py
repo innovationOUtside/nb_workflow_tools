@@ -31,4 +31,4 @@ setup(
         nb_cell_metadata_strip = tools.metadata_cleaner:cell_metadata_key_cleaner
         nb_cell_figure_tagger = tools.figure_cell_autotagger:figure_autotagger
     ''',
-)
+)        nb_cell_separator_fixer = tools.separator_fixer:separator_cleaner
