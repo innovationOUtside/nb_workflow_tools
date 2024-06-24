@@ -176,6 +176,24 @@ Update tag styles used for empinken cells:
 upgrade_empinken_tags ./
 ```
 
+### Notebook metadata updater - classicnb2jl extension metadata
+
+Patches metadata for extension migration:
+
+- collapsible headings ( `heading_collapsed -> jp-MarkdownHeadingCollapsed`) ; (also run `nb_cell_metadata_strip Part\ 07\ Notebooks hidden` to tidy other metadata sometimes used w/ collapsed cells in OU motebooks)
+
+```text
+Usage: cnb_collapse_head_migrate [OPTIONS] PATH
+
+  Fix collapsible headings metadata.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --hidden / --no-hidden        Include hidden files and
+                                directories.
+  --help                        Show this message and exit.
+```
+
 ### Notebook Split and Merge Utilities
 
 Simple tools to merge notebooks and split notebooks on a particular separator.
@@ -224,6 +242,8 @@ Usage: nb_collapse_activities [OPTIONS] PATH
 
 Options:
   --recursive / --no-recursive  Recursive search of directories.
+  --cnb / --no-cnb              Use classic notebook extension
+                                metadata value (default: use no-cnb (JupyterLab/nb7) format).
   --help                        Show this message and exit.
 ```
 

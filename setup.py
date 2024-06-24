@@ -31,5 +31,6 @@ setup(
         nb_cell_metadata_strip = ou_nb_workflow_tools.metadata_cleaner:cell_metadata_key_cleaner
         nb_cell_figure_tagger = ou_nb_workflow_tools.figure_cell_autotagger:figure_autotagger
         nb_cell_separator_fixer = ou_nb_workflow_tools.separator_fixer:separator_cleaner
+        cnb_collapse_head_migrate = ou_nb_workflow_tools.cnb2jl_ext_migrate:fix_collapse_headings_metadata
    """,
 )
