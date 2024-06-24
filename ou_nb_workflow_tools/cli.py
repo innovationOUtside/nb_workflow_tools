@@ -1,5 +1,5 @@
 import click
-import tools.imagetable as imagetable
+import ou_nb_workflow_tools.imagetable as imagetable
 
 @click.command()
 @click.argument('path', default='.', type=click.Path(exists=True))
