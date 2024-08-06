@@ -75,26 +75,27 @@ def _process(p, cnb):
 
 
 @click.command()
-@click.argument("path", type=click.Path(resolve_path=False))
+@click.argument("paths", nargs=-1, type=click.Path(resolve_path=False))
 @click.option(
     "--recursive/--no-recursive", default=True, help="Recursive search of directories."
 )
 @click.option(
     "--cnb/--no-cnb", default=False, help="Use classic notebook extension metadata value (default: use no-cnb (JupyterLab/nb7) format)."
 )
-def activity_collapser(path, recursive, cnb):
+def activity_collapser(paths, recursive, cnb):
     """Collapse activity answers."""
-
-    # Parse notebooks
-    nb_dir = Path(path)
-
-    if recursive:
-        exclude = set([])
-        for dirname, subdirs, files in os.walk(path, topdown=True):
-            subdirs[:] = [d for d in subdirs if d not in exclude]
-            exclude_hidden_items(subdirs)
-            for p in files:
-                _process(Path(dirname) / p, cnb)
-    else:
-        for p in nb_dir.iterdir():
-            _process(p, cnb)
+    for path in paths:
+        # Parse notebooks
+        nb_dir = Path(path)
+        if nb_dir.is_file():
+            _process(nb_dir)
+        if recursive:
+            exclude = set([])
+            for dirname, subdirs, files in os.walk(path, topdown=True):
+                subdirs[:] = [d for d in subdirs if d not in exclude]
+                exclude_hidden_items(subdirs)
+                for p in files:
+                    _process(Path(dirname) / p, cnb)
+        else:
+            for p in nb_dir.iterdir():
+                _process(p, cnb)

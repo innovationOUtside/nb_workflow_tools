@@ -289,3 +289,17 @@ Options:
   --recursive / --no-recursive  Recursive search of directories.
   --help                        Show this message and exit.
 ```
+
+## Find Code Cell Warnings, Errors, etc.
+
+Tool for locating notebooks where code cells have an error or warning output.
+
+```text
+Usage: nb_cell_stderr_finder [OPTIONS] PATH
+
+  Spot stderr errors and warnings.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+```
