@@ -311,7 +311,7 @@ Clean empty cells. Filters allow:
 - clean all cell types (`--blitz`: default `True`)
 - specify particular cell types (overrides `blitz`)
 - clean empty cells at start and end of notebook (default) or `--all` empty cells;
-- treat a cell as empty if it only contains whitespece (default: `True`; retain cells with whitespace by --no-stripwhitespace)
+- aggressively treat a cell as empty if it only contains whitespace (default: `True`; retain cells with whitespace by `--no-stripwhitespace`)
 
 ```text
 Usage: nb_empty_cell_cleaner [OPTIONS] [PATHS]...
