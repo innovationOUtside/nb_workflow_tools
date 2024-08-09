@@ -178,6 +178,21 @@ Update tag styles used for empinken cells:
 upgrade_empinken_tags ./
 ```
 
+## Clean cell separator
+
+Some M348 notebooks start a markdown cell with `---` which breaks rendering in JupyterLab with MyST at least. Repair the by either deleting the separator, or prefixing it with blank line.
+
+```text
+Usage: nb_cell_separator_fixer [OPTIONS] PATH
+
+  Clean separators at start of cell.
+
+Options:
+  --retain / --no-retain        Retain (fix) separator or delete it.
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+```
+
 ### Notebook metadata updater - classicnb2jl extension metadata
 
 Patches metadata for extension migration:
