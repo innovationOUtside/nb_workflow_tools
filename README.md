@@ -303,3 +303,31 @@ Options:
   --recursive / --no-recursive  Recursive search of directories.
   --help                        Show this message and exit.
 ```
+
+## Empty Cell Cleaner
+
+Clean empty cells. Filters allow:
+
+- clean all cell types (`--blitz`: default `True`)
+- specify particular cell types (overrides `blitz`)
+- clean empty cells at start and end of notebook (default) or `--all` empty cells;
+- treat a cell as empty if it only contains whitespece (default: `True`; retain cells with whitespace by --no-stripwhitespace)
+
+```text
+Usage: nb_empty_cell_cleaner [OPTIONS] [PATHS]...
+
+  Clean empty cells.
+
+Options:
+  --recursive / --no-recursive    Recursive search of directories.
+  --all / --no-all                Remove all empty cells, not just empty
+                                  initial and final cells.
+  --blitz / --no-blitz            Review all cell types (false if any explicit
+                                  cell types are set)
+  --code / --no-code              Check code cell.
+  --md / --no-md                  Check markdown cell.
+  --raw / --no-raw                Check raw cell.
+  --stripwhitespace / --no-stripwhitespace
+                                  Strip whitespace.
+  --help                          Show this message and exit.
+```
