@@ -1,4 +1,4 @@
-## Simple Routine to strip handle line separator (--) at strat of cell
+## Simple Routine to handle line separator (--) at start of cell
 # Either by replacing it with a valid spearator, or remove it)
 
 import os
