@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="tm351-nb-utils",
-    version="0.0.15",
+    version="0.0.16",
     py_modules=["tm351_nb_utils", "updaters", "html2nb", "splitmerge", "collapser"],
     packages=["ou_nb_workflow_tools"],
     install_requires=[
@@ -33,5 +33,6 @@ setup(
         nb_cell_separator_fixer = ou_nb_workflow_tools.separator_fixer:separator_cleaner
         cnb_collapse_head_migrate = ou_nb_workflow_tools.cnb2jl_ext_migrate:fix_collapse_headings_metadata
         nb_cell_stderr_finder = ou_nb_workflow_tools.warning_spotter:stderr_checker
+        nb_empty_cell_cleaner = ou_nb_workflow_tools.blank_cell_cleaner:empty_cell_cleaner
    """,
 )
