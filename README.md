@@ -292,7 +292,7 @@ Options:
 
 ## Find Code Cell Warnings, Errors, etc.
 
-Tool for locating notebooks where code cells have an error or warning output.
+Tool for locating notebooks where code cells have an error or warning output. Report displays "tagged" and "untagged" warning cells separately, using the `nbval` cell tag `raises-exception` to identify tagged cells that are expected to raise a warning (TO DO - warn if a `raises-exception` cell *does not* raise a warning).
 
 ```text
 Usage: nb_cell_stderr_finder [OPTIONS] PATH
