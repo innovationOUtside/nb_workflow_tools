@@ -183,7 +183,7 @@ upgrade_empinken_tags ./
 Some M348 notebooks start a markdown cell with `---` which breaks rendering in JupyterLab with MyST at least. Repair the by either deleting the separator, or prefixing it with blank line.
 
 ```text
-Usage: nb_cell_separator_fixer [OPTIONS] PATH
+Usage: nb_cell_separator_fixer [OPTIONS] PATHS
 
   Clean separators at start of cell.
 
@@ -326,9 +326,14 @@ Options:
 Clean empty cells. Filters allow:
 
 - clean all cell types (`--blitz`: default `True`)
-- specify particular cell types (overrides `blitz`)
+- specify particular cell types ( any/all of `--md`, `--code`, `--raw`; any of these tags overrides/disables `blitz`)
 - clean empty cells at start and end of notebook (default) or `--all` empty cells;
 - aggressively treat a cell as empty if it only contains whitespace (default: `True`; retain cells with whitespace by `--no-stripwhitespace`)
+
+For example:
+
+- clean all empty markdown cells: `nb_empty_cell_cleaner --all --md PATH`
+- clean all empty code cells at start or end of file: `nb_empty_cell_cleaner --code PATH`
 
 ```text
 Usage: nb_empty_cell_cleaner [OPTIONS] [PATHS]...

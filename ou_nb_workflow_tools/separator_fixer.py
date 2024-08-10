@@ -13,33 +13,35 @@ import re
 
 def _process(p, retain):
     """Handle cells and clean separators as required."""
+    try:
+        if p.is_file() and p.suffix == ".ipynb":
+            updated = False
 
-    if p.is_file() and p.suffix == ".ipynb":
-        updated = False
+            # Read notebook
+            with p.open("r") as f:
 
-        # Read notebook
-        with p.open("r") as f:
-
-            nb = nbformat.read(f, nbformat.NO_CONVERT)
-            for _, cell in enumerate(nb["cells"]):
-                if cell["cell_type"] == "markdown":
-                    pattern = r"^-+\s*(?:\n.*)?$"
-                    needs_repair = re.match(pattern, cell["source"])
-                    if bool(needs_repair):
-                        if retain:
-                            cell["source"] = f'\n{cell["source"]}'
-                        else:
-                            pattern = r"^-+\s*\n?"
-                            match = re.search(pattern, cell["source"])
-                            cell["source"] = cell["source"][match.end():]
-                        updated = True   
-        if updated:
-            print(f"Updating {p}")
-            nbformat.write(nb, p.open("w"), nbformat.NO_CONVERT)
+                nb = nbformat.read(f, nbformat.NO_CONVERT)
+                for _, cell in enumerate(nb["cells"]):
+                    if cell["cell_type"] == "markdown":
+                        pattern = r"^-+\s*(?:\n.*)?$"
+                        needs_repair = re.match(pattern, cell["source"])
+                        if bool(needs_repair):
+                            if retain:
+                                cell["source"] = f'\n{cell["source"]}'
+                            else:
+                                pattern = r"^-+\s*\n?"
+                                match = re.search(pattern, cell["source"])
+                                cell["source"] = cell["source"][match.end():]
+                            updated = True   
+            if updated:
+                print(f"Updating {p}")
+                nbformat.write(nb, p.open("w"), nbformat.NO_CONVERT)
+    except:
+        print(f"Error trying toclean separator in {p}")
 
 
 @click.command()
-@click.argument("path", type=click.Path(resolve_path=False))
+@click.argument("paths", nargs=-1, type=click.Path(resolve_path=False))
 @click.option(
     "--retain/--no-retain",
     default=True,
@@ -48,21 +50,21 @@ def _process(p, retain):
 @click.option(
     "--recursive/--no-recursive", default=True, help="Recursive search of directories."
 )
-def separator_cleaner(path, retain, recursive):
+def separator_cleaner(paths, retain, recursive):
     """Clean separators at start of cell."""
+    for path in paths:
+        # Parse notebooks
+        nb_dir = Path(path)
+        if nb_dir.is_file():
+            _process(nb_dir, retain)
 
-    # Parse notebooks
-    nb_dir = Path(path)
-    if nb_dir.is_file():
-        _process(nb_dir, retain)
-
-    if recursive:
-        exclude = set([])
-        for dirname, subdirs, files in os.walk(path, topdown=True):
-            subdirs[:] = [d for d in subdirs if d not in exclude]
-            exclude_hidden_items(subdirs)
-            for p in files:
-                _process(Path(dirname) / p, retain)
-    else:
-        for p in nb_dir.iterdir():
-            _process(p, retain)
+        if recursive:
+            exclude = set([])
+            for dirname, subdirs, files in os.walk(path, topdown=True):
+                subdirs[:] = [d for d in subdirs if d not in exclude]
+                exclude_hidden_items(subdirs)
+                for p in files:
+                    _process(Path(dirname) / p, retain)
+        else:
+            for p in nb_dir.iterdir():
+                _process(p, retain)
