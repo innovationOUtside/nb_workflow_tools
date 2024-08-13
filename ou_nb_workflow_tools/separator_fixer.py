@@ -19,26 +19,35 @@ def _process(p, retain):
 
             # Read notebook
             with p.open("r") as f:
-
                 nb = nbformat.read(f, nbformat.NO_CONVERT)
-                for _, cell in enumerate(nb["cells"]):
+                for cell in nb["cells"]:
+
                     if cell["cell_type"] == "markdown":
-                        pattern = r"^-+\s*(?:\n.*)?$"
-                        needs_repair = re.match(pattern, cell["source"])
+                        source = cell["source"]
+                        if isinstance(source, list):
+                            source = "".join(source)
+                        pattern = r"^-+\s*\s*(?:\n|$)"
+                        needs_repair = re.match(pattern, source)
                         if bool(needs_repair):
                             if retain:
-                                cell["source"] = f'\n{cell["source"]}'
+                                new_source = f"\n{source}"
                             else:
                                 pattern = r"^-+\s*\n?"
-                                match = re.search(pattern, cell["source"])
-                                cell["source"] = cell["source"][match.end():]
-                            updated = True   
+                                match = re.search(pattern, source)
+                                new_source = source[match.end() :]
+
+                            # Update the cell source
+                            if isinstance(cell["source"], list):
+                                cell["source"] = [new_source]
+                            else:
+                                cell["source"] = new_source
+
+                            updated = True
             if updated:
                 print(f"Updating {p}")
                 nbformat.write(nb, p.open("w"), nbformat.NO_CONVERT)
-    except:
-        print(f"Error trying toclean separator in {p}")
-
+    except Exception as e:
+        print(f"Error trying to clean separator in {p}: {str(e)}")
 
 @click.command()
 @click.argument("paths", nargs=-1, type=click.Path(resolve_path=False))
