@@ -355,3 +355,20 @@ Options:
                                   Strip whitespace.
   --help                          Show this message and exit.
 ```
+
+## Split Cells on Heading
+
+Split cells at a heading. Sp
+
+*Raises the question of if we should merge contiguous markdown cells that are *not* split on a heading?*
+
+```text
+Usage: nb_split_sections [OPTIONS] [PATHS]...
+
+  Split cells at section headings.
+
+Options:
+  --maxheading INTEGER          Maximum heading level to split at (1 to 6); default=3.
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+```

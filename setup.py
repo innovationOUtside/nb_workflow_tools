@@ -34,5 +34,6 @@ setup(
         cnb_collapse_head_migrate = ou_nb_workflow_tools.cnb2jl_ext_migrate:fix_collapse_headings_metadata
         nb_cell_stderr_finder = ou_nb_workflow_tools.warning_spotter:stderr_checker
         nb_empty_cell_cleaner = ou_nb_workflow_tools.blank_cell_cleaner:empty_cell_cleaner
+        nb_split_sections = ou_nb_workflow_tools.section_splitter:section_splitter
    """,
 )
