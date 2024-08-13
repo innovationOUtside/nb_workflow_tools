@@ -9,14 +9,19 @@ import os
 import nbformat
 from pathlib import Path
 
-
 def _process(p, all, cell_typs, stripwhitespace):
     """Clean empty cells."""
+
     # Function to check if a cell is empty and of an approved type
     def is_empty_approved(cell):
+        source = cell.get("source", "")
+        # Cope with v4 and v5 notebooks
+        if isinstance(source, list):
+            source = "".join(source)
+
         if not stripwhitespace:
-            return cell["cell_type"] in cell_typs and not cell.source
-        return cell["cell_type"] in cell_typs and not "\n".join(cell.source).strip()
+            return cell["cell_type"] in cell_typs and not source
+        return cell["cell_type"] in cell_typs and not source.strip()
 
     if p.is_file() and p.suffix == ".ipynb":
         # Read notebook
@@ -36,6 +41,7 @@ def _process(p, all, cell_typs, stripwhitespace):
 
         if cell_count != len(nb.cells):
             print(f"Updating {p}")
+            # By default, we do not convert notebook version
             nbformat.write(nb, p.open("w"), nbformat.NO_CONVERT)
 
 
