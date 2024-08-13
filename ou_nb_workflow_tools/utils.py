@@ -1,7 +1,10 @@
 import os
 import jupytext
-import Path
+from pathlib import Path
 import io
+
+import codecs
+
 
 def _dir_file_handler(path, _f, filetype='.md'):
     """Get the filename for a single file on a specified path."""
@@ -46,3 +49,16 @@ def _path_full_processor(path):
         with open(fn, 'w') as f:
             # Write File
             f.write(txt)
+
+
+
+def detect_encoding(file_path):
+    encodings = ["utf-8", "ascii", "latin-1", "utf-16", "utf-32"]
+    for encoding in encodings:
+        try:
+            with codecs.open(file_path, "r", encoding=encoding) as file:
+                file.read()
+            return encoding
+        except UnicodeDecodeError:
+            continue
+    return None
