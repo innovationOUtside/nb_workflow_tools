@@ -17,20 +17,24 @@ import os
 import nbformat
 from pathlib import Path
 
-def _process(p, cnb):
+
+def _process(p, cnb, possibles):
     """Handle cell collapse."""
+
+    def normalize_source(source):
+        if isinstance(source, list):
+            return "".join(source)
+        return source
+
     collapse_metadata = "heading_collapsed" if cnb else "jp-MarkdownHeadingCollapsed"
     tag_set = {"style-activity", "style_activity"}
     metadata_set = {"activity"}
 
-    possibles = ["# Our solution",  "# Answer", "click on the triangle symbol"]
-    possibles = [p.lower() for p in possibles]
-
-    if p.is_file() and p.suffix == '.ipynb':
+    if p.is_file() and p.suffix == ".ipynb":
         updated = False
 
         # Read notebook
-        with p.open('r') as f:
+        with p.open("r") as f:
             # print(f"Trying {p}")
 
             nb = nbformat.read(f, nbformat.NO_CONVERT)
@@ -39,17 +43,22 @@ def _process(p, cnb):
             answer_header = False
             # header_level = 0
             # Enumerate through cells
-            for i, cell in enumerate(nb['cells']):
-                if ('tags' in cell["metadata"] and tag_set.intersection(set(cell["metadata"]["tags"])))                                 or metadata_set.intersection(set(cell["metadata"])):
-                    # For each markdown cell
-                    if cell['cell_type']=='markdown':
-                        # Hacky attempt at identifying an answer header
-                        if cell['source'].startswith("#"):
-                            if any(ans in cell['source'].lower() for ans in possibles):
-                                # header_level = len(cell['source'].split(" ")[0])
+            for i, cell in enumerate(nb["cells"]):
+                cell_tags = cell.get("metadata", {}).get("tags", [])
+                cell_metadata = cell.get("metadata", {})
+                if tag_set.intersection(set(cell_tags)) or metadata_set.intersection(
+                    set(cell_metadata)
+                ):
+                    if cell["cell_type"] == "markdown":
+                        normalized_source = normalize_source(cell["source"]).strip()
+                        if normalized_source.startswith("#"):
+                            if any(
+                                ans in normalized_source.lower() for ans in possibles
+                            ):
                                 answer_header = True
-                elif 'tags' in cell["metadata"] and "precollapse" in cell["metadata"]["tags"]                             and cell['source'].startswith("#"):
-                    # This is a convenience thing posting a new "precollapse" tag
+                elif "precollapse" in cell_tags and normalize_source(
+                    cell["source"]
+                ).strip().startswith("#"):
                     answer_header = True
                 else:
                     answer_block = False
@@ -71,7 +80,7 @@ def _process(p, cnb):
 
         if updated:
             print(f"Updating {p}")
-            nbformat.write(nb, p.open('w'), nbformat.NO_CONVERT)
+            nbformat.write(nb, p.open("w"), nbformat.NO_CONVERT)
 
 
 @click.command()
@@ -80,22 +89,45 @@ def _process(p, cnb):
     "--recursive/--no-recursive", default=True, help="Recursive search of directories."
 )
 @click.option(
-    "--cnb/--no-cnb", default=False, help="Use classic notebook extension metadata value (default: use no-cnb (JupyterLab/nb7) format)."
+    "--cnb/--no-cnb",
+    default=False,
+    help="Use classic notebook extension metadata value (default: use no-cnb (JupyterLab/nb7) format).",
 )
-def activity_collapser(paths, recursive, cnb):
+@click.option(
+    "--additional-possibles",
+    "-ap",
+    multiple=True,
+    help="Additional possible strings to match. Use quotes; add separate flag per item.",
+)
+def activity_collapser(paths, recursive, cnb, additional_possibles):
     """Collapse activity answers."""
+    possibles = ["# Our solution", "# Answer", "click on the triangle symbol"]
+    possibles.extend(additional_possibles)
+    possibles = [p.lower() for p in possibles]
     for path in paths:
         # Parse notebooks
         nb_dir = Path(path)
         if nb_dir.is_file():
-            _process(nb_dir)
+            _process(
+                nb_dir,
+                cnb,
+                possibles=possibles,
+            )
         if recursive:
             exclude = set([])
             for dirname, subdirs, files in os.walk(path, topdown=True):
                 subdirs[:] = [d for d in subdirs if d not in exclude]
                 exclude_hidden_items(subdirs)
                 for p in files:
-                    _process(Path(dirname) / p, cnb)
+                    _process(
+                        Path(dirname) / p,
+                        cnb,
+                        possibles=possibles,
+                    )
         else:
             for p in nb_dir.iterdir():
-                _process(p, cnb)
+                _process(
+                    p,
+                    cnb,
+                    possibles=possibles,
+                )

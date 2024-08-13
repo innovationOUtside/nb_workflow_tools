@@ -261,6 +261,8 @@ Options:
   --recursive / --no-recursive  Recursive search of directories.
   --cnb / --no-cnb              Use classic notebook extension
                                 metadata value (default: use no-cnb (JupyterLab/nb7) format).
+  -ap, --additional-possibles TEXT
+                                Additional possible strings to match. Use quotes; add separate flag per item.
   --help                        Show this message and exit.
 ```
 
