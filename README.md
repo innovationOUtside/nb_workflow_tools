@@ -2,7 +2,7 @@
 
 First attempt at some command line utils to support Jupyter notebook workflows for OU course TM351.
 
-To install: `pip install nb_workflow_tools`
+To install: `pip install tm351_nb_utils`
 
 To install the latest version from this repo:
 
