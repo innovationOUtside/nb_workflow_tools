@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="tm351-nb-utils",
-    version="0.0.21",
+    version="0.0.28",
     py_modules=["tm351_nb_utils", "updaters", "html2nb", "splitmerge", "collapser"],
     packages=["ou_nb_workflow_tools"],
     install_requires=[
@@ -17,6 +17,7 @@ setup(
     entry_points="""
         [console_scripts]
         tm351zip=tm351_nb_utils:cli_zip
+        tm351unzip=tm351_nb_utils:cli_unzip
         tm351zipview=tm351_nb_utils:cli_zipview
         tm351gitrepos=tm351_nb_utils:cli_gitrepos
         tm351nbtest=tm351_nb_utils:cli_nbtest

@@ -74,8 +74,23 @@ Options:
   -H, --include-hiddenfiles       Include hidden files
   -X, --exclude-dir PATH          Exclude specified directory
   -x, --exclude-file PATH         Exclude specified file
+  -F, --force                     Force overwriting of pre-existing zip file
   -a, --zip_append                Add to existing zip file
   --help                          Show this message and exit.
+```
+
+#### Zip file unzipper
+
+```text
+Usage: tm351unzip [OPTIONS] ZIPFILE_PATH [TARGET_DIR]
+
+  Unzip a file into a target directory.
+
+  ZIPFILE_PATH: Path to the zip file to be extracted.
+  TARGET_DIR: Directory to extract the contents to (default: zip_output).
+
+Options:
+  --help  Show this message and exit.
 ```
 
 #### Grab files from Github repo
