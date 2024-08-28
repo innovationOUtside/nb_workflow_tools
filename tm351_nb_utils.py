@@ -1,6 +1,6 @@
 # ou-tm351 - `nb_pub_utils`
 
-#GOTCHA - Python on Mac logging in to Github: https://stackoverflow.com/a/42098127/454773
+# GOTCHA - Python on Mac logging in to Github: https://stackoverflow.com/a/42098127/454773
 
 import click
 
@@ -29,7 +29,7 @@ def listify(item):
     #We may be passed a tuple - in which case, listify...
     item = list(item) if isinstance(item,(list,tuple)) else [item]
     return item
-    
+
 def exclude_hidden_items(itemlist, exclude_hidden=True):
     ''' Exclude hidden items from ziplist '''
     if exclude_hidden:
@@ -39,7 +39,7 @@ def exclude_hidden_items(itemlist, exclude_hidden=True):
                 rmlist.append(x)
         for x in rmlist:
             itemlist.remove(x)
-            
+
 def exclude_items(itemlist, excludes, exclude_hidden=True, ipynb_only=False):
     ''' Exclude items from ziplist '''
 
@@ -51,8 +51,7 @@ def exclude_items(itemlist, excludes, exclude_hidden=True, ipynb_only=False):
                 itemlist.remove(i)
         
     if exclude_hidden: exclude_hidden_items(itemlist)
-    
-    
+
 
 def notebookTest(path=None, filename=None, dir_excludes=None, file_excludes=None):
     ''' Run notebook tests over explicitly named files and directories.
@@ -133,7 +132,7 @@ replace: TIMEIT_REPORT
         
         os.unlink(tmp_fn)
         return resps
-        
+
 def notebookProcessor(notebook, mode=None, outpath=None, outfile=None, inplace=True):
     ''' Clear notebook output cells.
     
@@ -171,7 +170,7 @@ def notebookProcessor(notebook, mode=None, outpath=None, outfile=None, inplace=T
     #  nbformat will create a new file with same name ending: .nbformat.ipynb
     if outpath is not None:
         cmd ='{cmd} --output-dir {outpath}'.format(cmd=cmd, outpath=quote(outpath))
-        
+    #print(f"Trying command {cmd}")
     return cli_command(cmd)
 
 def directoryProcessor(path,
@@ -267,11 +266,72 @@ def directoryProcessor(path,
         exclude_items(files, file_excludes, not include_hidden)
         dirname=path
         _process(outpath)
-        
-#Running zipper with a file_processor will change the cell state in current dir
-#That is, notebooks are processed in place then zipped
-#The notebooks as seen in the dir will reflect those in the zipfile
-#We could modify this behaviour so it does not affect original notebooks?
+
+# Via Claude.ai
+import tempfile
+import warnings
+
+
+def add_to_zipfile_with_warning(zf, filename, tmp_filename=None):
+    try:
+        # Temporarily set warnings to raise exceptions
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", UserWarning)
+            zf.write(filename, tmp_filename)
+    except UserWarning as w:
+        if "Duplicate name:" in str(w):
+            print(f"Warning: Duplicate file in zip - {tmp_filename or filename}")
+        else:
+            # Re-raise other warnings
+            raise
+
+
+# via claude.ai
+def process_notebook_with_temp_dir(filepathname, file_processor, zf):
+    # Get the directory and filename of the notebook
+    file_dir, filename = os.path.split(filepathname)
+
+    # Create a temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Copy the original notebook to the temp directory
+        temp_filepathname = os.path.join(temp_dir, filename)
+        shutil.copy2(filepathname, temp_filepathname)
+
+        if file_processor in ['clearOutput', 'runWithErrors'] and filename.endswith('.ipynb'):
+            # Process the notebook in the temporary directory
+            notebookProcessor(temp_filepathname, mode=file_processor, inplace=True)
+
+        # Add the processed notebook to the zip file, preserving the original path
+        # zf.write(temp_filepathname, filepathname)
+        add_to_zipfile_with_warning(zf, temp_filepathname, filepathname)
+
+
+def process_notebook_with_temp(filepathname, file_processor, zf):
+    file_dir, filename = os.path.split(filepathname)
+
+    # Create a temporary filename in the same directory
+    with tempfile.NamedTemporaryFile(delete=False, dir=file_dir, suffix='.ipynb') as temp_file:
+        temp_filepathname = temp_file.name
+        try:
+            # Copy the original notebook to the temporary filename
+            shutil.copy2(filepathname, temp_filepathname)
+
+            if file_processor in ['clearOutput', 'runWithErrors'] and filename.endswith('.ipynb'):
+                # Process the notebook with the temporary filename
+                notebookProcessor(temp_filepathname, mode=file_processor, inplace=True)
+
+            # Add the processed notebook to the zip file, preserving the original path
+            add_to_zipfile_with_warning(zf, temp_filepathname, filepathname)
+
+        finally:
+            # Ensure the temporary file is deleted after processing
+            if os.path.exists(temp_filepathname):
+                os.remove(temp_filepathname)
+
+# Running zipper with a file_processor will change the cell state in current dir
+# That is, notebooks are processed in place then zipped
+# The notebooks as seen in the dir will reflect those in the zipfile
+# We could modify this behaviour so it does not affect original notebooks?
 def zipper(dirtozip, zipfilename,
            include_hidden=False,
            dir_excludes=None,
@@ -280,22 +340,29 @@ def zipper(dirtozip, zipfilename,
            reportlevel=1, rmdir=False, 
            zip_append=False):
     ''' Zip the contents of a directory and its subdirectories '''
-     
+
     file_excludes = listify(file_excludes)
     dir_excludes = listify(dir_excludes)
 
     zip_permission = "a" if zip_append else "w"
-    #Create a new/replacement zip file, rather than append if zipfile already exists
+    # Create a new/replacement zip file, rather than append if zipfile already exists
     zf = zipfile.ZipFile(zipfilename, zip_permission, compression=zipfile.ZIP_DEFLATED)
-    
-    #Don't zip files of same name as the zip file we are creating
-    file_excludes.append(zipfilename)
 
+    # Don't zip files of same name as the zip file we are creating
+    file_excludes.append(zipfilename)
     # if we have just a single file to zip and not a dir, zip that
     if os.path.isfile(dirtozip):
-        zf.write(dirtozip)
+        if file_processor in [
+            "clearOutput",
+            "clearOutputTest",
+            "runWithErrors",
+        ] and dirtozip.endswith(".ipynb"):
+            process_notebook_with_temp(dirtozip, file_processor, zf)
+        # print("command is run, should be zipping now")
+        else:
+            zf.write(dirtozip)
     elif os.path.isdir(dirtozip):
-        #https://stackoverflow.com/a/31779538/454773
+        # https://stackoverflow.com/a/31779538/454773
         for dirname, subdirs, files in os.walk(dirtozip):
             exclude_items(subdirs, dir_excludes, not include_hidden)
             exclude_items(files, file_excludes, not include_hidden)
@@ -305,18 +372,19 @@ def zipper(dirtozip, zipfilename,
                 for filename in bar:
                     if reportlevel>1:print(filename)
                     filepathname=os.path.join(dirname, filename)
-                    #There is no point using 'run': if there is an error, nbconvert will fail
+                    # There is no point using 'run': if there is an error, nbconvert will fail
                     if file_processor in ['clearOutput', 'runWithErrors'] and filename.endswith('.ipynb'):
-                        #This introduces side effects - notebooks are processed in current path
-                        #Should we do this in a tmpfile?
-                        notebookProcessor(filepathname, mode=file_processor, inplace=True)
-                    zf.write(filepathname)
+                        # This introduces side effects - notebooks are processed in current path
+                        process_notebook_with_temp(filepathname, file_processor, zf)
+                        # notebookProcessor(filepathname, mode=file_processor, inplace=True)
+                    else:
+                        zf.write(filepathname)
     zf.close()
-    
-    #Is this too risky?!
-    #if rmdir: shutil.rmtree(dirtozip, ignore_errors=True)
+
+    # Is this too risky?!
+    # if rmdir: shutil.rmtree(dirtozip, ignore_errors=True)
     return zipfilename
-    
+
 def insideZip(zfn, report=True):
     ''' Look inside a zip file.
         The report contains four columns: file_size, file compressed size, datetime and filename.
@@ -340,24 +408,45 @@ def insideZip(zfn, report=True):
     tabulate(txt, headers=['Full','Zip','Datetime','Path'],tablefmt="simple")
     return txt  
 
+
 @click.command()
-@click.option('--file-processor','-r', type=click.Choice(['clearOutput', 'runWithErrors']))
-@click.option('--include-hiddenfiles', '-H', is_flag=True, help='Include hidden files')
-@click.option('--exclude-dir', '-X', multiple=True, type=click.Path(resolve_path=False), help='Exclude specified directory')
-@click.option('--exclude-file','-x', multiple=True,type=click.Path(resolve_path=False), help='Exclude specified file')
-@click.option('--zip_append','-a', is_flag=True, help='Add to existing zip file')
-@click.argument('path', type=click.Path(resolve_path=False))
-#@click.argument('zipfile', type=click.File('wb'))
-@click.argument('zipfile', type=click.Path())
-def cli_zip(file_processor, include_hiddenfiles, exclude_dir, exclude_file, zip_append, path, zipfile):
+@click.option(
+    "--file-processor", "-r", type=click.Choice(["clearOutput", "runWithErrors"])
+)
+@click.option("--include-hiddenfiles", "-H", is_flag=True, help="Include hidden files")
+@click.option(
+    "--exclude-dir",
+    "-X",
+    multiple=True,
+    type=click.Path(resolve_path=False),
+    help="Exclude specified directory",
+)
+@click.option(
+    "--exclude-file",
+    "-x",
+    multiple=True,
+    type=click.Path(resolve_path=False),
+    help="Exclude specified file",
+)
+@click.option("--zip_append", "-a", is_flag=True, help="Add to existing zip file")
+@click.option("--force", "-F", is_flag=True, default=False, help="Force the operation.")
+@click.argument(
+    "path", type=click.Path(resolve_path=False)
+)  
+# @click.argument('zipfile', type=click.File('wb'))
+@click.argument("zipfile", type=click.Path())
+def cli_zip(file_processor, include_hiddenfiles, exclude_dir, exclude_file, zip_append, force, path, zipfile):
     """Create a zip file from the contents of a specified directory.
     
     The zipper can optionally run a notebook processor on notebooks before zipping them to check that all cells are run or all cells are cleared.
     """
     print('You must be crazy using this...')
 
-    if not zip_append:
-        print(f"\nOverwriting any previous {zipfile} file\n")
+    if not zip_append and not force:
+        print(f"\nThis would overwrite any previous {zipfile} file\n\tUse -F/--force to overwrite.\n\tUse -a, --zip_append to add to an existing zip file.")
+        exit(-1)
+    elif force and not zip_append:
+        print(f"Deleting/completely overwriting {zipfile}")
     else:
         print(f"\nAppending zipped files to: {zipfile}\n")
 
@@ -370,10 +459,41 @@ def cli_zip(file_processor, include_hiddenfiles, exclude_dir, exclude_file, zip_
 
     print(f"\nZip file: {fn}\n")
 
+
+# h/t Claude.ai
 @click.command()
-@click.option('--quiet', '-q', is_flag=True, help='Suppress the report.')
-@click.option('--warnings', '-w', is_flag=True, help='Display warnings')
-@click.argument('filename', type=click.Path(resolve_path=True),nargs=-1)
+@click.argument("zipfile_path", type=click.Path(exists=True))
+@click.argument("target_dir", type=click.Path(), default="zip_output")
+def cli_unzip(zipfile_path, target_dir):
+    """
+    Unzip a file into a target directory.
+
+    ZIPFILE_PATH: Path to the zip file to be extracted.
+    TARGET_DIR: Directory to extract the contents to (default: zip_output).
+    """
+    try:
+        # Ensure the target directory exists
+        os.makedirs(target_dir, exist_ok=True)
+
+        # Open and extract the zip file
+        with zipfile.ZipFile(zipfile_path, "r") as zip_ref:
+            zip_ref.extractall(target_dir)
+
+        click.echo(f"Successfully extracted {zipfile_path} to {target_dir}")
+    except zipfile.BadZipFile:
+        click.echo(f"Error: {zipfile_path} is not a valid zip file", err=True)
+    except PermissionError:
+        click.echo(
+            f"Error: Permission denied when trying to extract to {target_dir}", err=True
+        )
+    except Exception as e:
+        click.echo(f"An unexpected error occurred: {str(e)}", err=True)
+
+
+@click.command()
+@click.option("--quiet", "-q", is_flag=True, help="Suppress the report.")
+@click.option("--warnings", "-w", is_flag=True, help="Display warnings")
+@click.argument("filename", type=click.Path(resolve_path=True), nargs=-1)
 def cli_zipview(filename, warnings, quiet):
     """List the contents of one or more specified zipfiles.
     """
@@ -453,8 +573,6 @@ def cli_nbrun(file_processor, outpath, inplace, exclude_dir, exclude_file, inclu
                        dir_excludes=exclude_dir,
                        file_excludes=exclude_file, rmdir=rmdir, currdir=currdir,
                        subdirs=subdirs,reportlevel=reportlevel)
-
-
 
 
 from github import Github
