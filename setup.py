@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="tm351-nb-utils",
-    version="0.0.28",
+    version="0.0.29",
     py_modules=["tm351_nb_utils", "updaters", "html2nb", "splitmerge", "collapser"],
     packages=["ou_nb_workflow_tools"],
     install_requires=[
@@ -36,5 +36,6 @@ setup(
         nb_cell_stderr_finder = ou_nb_workflow_tools.warning_spotter:stderr_checker
         nb_empty_cell_cleaner = ou_nb_workflow_tools.blank_cell_cleaner:empty_cell_cleaner
         nb_split_sections = ou_nb_workflow_tools.section_splitter:section_splitter
+        nb_cell_run_status = ou_nb_workflow_tools.cell_run_status_checker:cell_run_status_checker
    """,
 )

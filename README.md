@@ -338,6 +338,24 @@ Options:
   --help                        Show this message and exit.
 ```
 
+## Check run cell status
+
+Check the run cell status indexes of notebooks.
+
+The `-r` flag can be used to add check notebooks that are intended to have been run; the `-N` flag can be used to add check notebooks that are intended NOT to have been run.
+
+```text
+Usage: nb_cell_run_status [OPTIONS] [PATHS]...
+
+  Check cell run status indications.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  -r, --check-run               Check if cells run.
+  -N, --check-not-run           Check if cells are not run.
+  --help                        Show this message and exit.
+```
+
 ## Empty Cell Cleaner
 
 Clean empty cells. Filters allow:
