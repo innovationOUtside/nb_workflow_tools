@@ -188,9 +188,14 @@ Options:
 
 Update tag styles used for empinken cells:
 
+- update `style_activity` -> `style-activity`
+- update `style_solution` -> `style-solution`
+- update `style_student` / `style-student` -> `style-learner`
+- update `style_commentate` / `style-commentate` -> `style-tutor`
+
 ```text
-# Recurse on directory path rewriting .ipynb files with new tag style
-upgrade_empinken_tags ./
+# Update single notebook or recurse on directory path rewriting .ipynb files with new tag style
+upgrade_empinken_tags NOTEBOOKS_PATH
 ```
 
 ## Clean cell separator
@@ -405,3 +410,10 @@ Options:
   --recursive / --no-recursive  Recursive search of directories.
   --help                        Show this message and exit.
 ```
+
+
+## DEV
+
+Build releasablke package: `python -m build`
+
+Upload to PyPi: `twine upload dist/*.0.30*
