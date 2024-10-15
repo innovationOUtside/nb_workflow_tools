@@ -231,6 +231,20 @@ Options:
   --help                        Show this message and exit.
 ```
 
+### HTML Tag to MyST Updater
+
+The `jupyterlab-myst` extension breaks the rendering of HTML image (`img`) and anchoe (`a`) tags in notebook markdown cells. This tool will try to find corresponding HTML tags and replace them with MyST/markdown equivalents (a MyST `{image}` block for the image tag, a markdown link for the anchor tag).
+
+```text
+Usage: nb_html2myst_updater [OPTIONS] [PATHS]...
+
+  Replace HTML image and anchor tags with MyST equivalent.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --help                        Show this message and exit.
+```
+
 ### Notebook Split and Merge Utilities
 
 Simple tools to merge notebooks and split notebooks on a particular separator.
