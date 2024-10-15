@@ -38,6 +38,8 @@ def cell_metadata_key_cleaner(path, key, recursive):
 
     # Parse notebooks
     nb_dir = Path(path)
+    if nb_dir.is_file():
+        _process(nb_dir, key)
 
     if recursive:
         exclude = set([])
