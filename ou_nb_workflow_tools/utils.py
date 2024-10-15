@@ -51,14 +51,23 @@ def _path_full_processor(path):
             f.write(txt)
 
 
-
 def detect_encoding(file_path):
     encodings = ["utf-8", "ascii", "latin-1", "utf-16", "utf-32"]
     for encoding in encodings:
+        print(f"trying to open file as {encoding}")
         try:
             with codecs.open(file_path, "r", encoding=encoding) as file:
                 file.read()
+            print(f"okay... opened with {encoding}")
             return encoding
         except UnicodeDecodeError:
+            print(f"hmm... {encoding} gave UnicodeDecodeError")
             continue
     return None
+
+
+def defensive_open(p, mode="r"):
+    """Open a file with detected encoding or default to 'utf-8'."""
+    detected_encoding = detect_encoding(p)
+    encoding = "utf-8" if not detected_encoding else detected_encoding
+    return p.open(mode, encoding=encoding)

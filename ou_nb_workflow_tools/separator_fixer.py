@@ -10,15 +10,16 @@ import os
 import nbformat
 from pathlib import Path
 import re
+from .utils import defensive_open
 
 def _process(p, retain):
     """Handle cells and clean separators as required."""
     try:
         if p.is_file() and p.suffix == ".ipynb":
             updated = False
-
+ 
             # Read notebook
-            with p.open("r") as f:
+            with defensive_open(p) as f:
                 nb = nbformat.read(f, nbformat.NO_CONVERT)
                 for cell in nb["cells"]:
 
