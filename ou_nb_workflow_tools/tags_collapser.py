@@ -37,8 +37,9 @@ def tag_toolbar_collapser(path, recursive):
 
     # Parse notebooks
     nb_dir = Path(path)
-    
-    if recursive:
+    if nb_dir.is_file():
+        _process(nb_dir)
+    elif recursive:
         exclude = set([])
         for dirname, subdirs, files in os.walk(path, topdown=True):
             subdirs[:] = [d for d in subdirs if d not in exclude]

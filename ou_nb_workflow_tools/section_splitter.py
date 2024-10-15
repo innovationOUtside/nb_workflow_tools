@@ -76,8 +76,7 @@ def section_splitter(paths, maxheading, recursive):
         nb_dir = Path(path)
         if nb_dir.is_file():
             _process(nb_dir, maxheading)
-
-        if recursive:
+        elif recursive:
             exclude = set([])
             for dirname, subdirs, files in os.walk(path, topdown=True):
                 subdirs[:] = [d for d in subdirs if d not in exclude]
