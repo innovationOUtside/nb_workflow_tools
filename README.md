@@ -330,7 +330,7 @@ Options:
 
 ## Clear code outputs by tag
 
-Tool to clear (or not) code outputs by cod cell tag:
+Tool to clear (or not) code outputs by code cell tag:
 
 - `nb_remove_code_outputs PATH`: do nothing
 - `nb_remove_code_outputs PATH -t tag`: clear tagged cell outputs
