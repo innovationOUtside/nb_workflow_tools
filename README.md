@@ -314,14 +314,14 @@ Options:
   --help                        Show this message and exit.
 ```
 
-### Clean Cell Metadata Tag
+### Clean Cell Metadata Keys
 
-Remove metadata object from cell metadata by key, eg `nbdime-conflicts` or `scrolled`
+Remove metadata object from cell metadata by key, e.g. `nbdime-conflicts` or `scrolled`
 
 ```text
-Usage: nb_cell_metadata_strip [OPTIONS] PATH KEY
+Usage: nb_cell_metadata_strip [OPTIONS] PATH [KEYS]...
 
-  Clean metadata from cell.
+  Clean one or more metadata items by key from cell .
 
 Options:
   --recursive / --no-recursive  Recursive search of directories.
