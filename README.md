@@ -328,6 +328,31 @@ Options:
   --help                        Show this message and exit.
 ```
 
+## Clear code outputs by tag
+
+Tool to clear (or not) code outputs by cod cell tag:
+
+- `nb_remove_code_outputs PATH`: do nothing
+- `nb_remove_code_outputs PATH -t tag`: clear tagged cell outputs
+- `nb_remove_code_outputs PATH --blitz`: clear all ouptut cells
+- `nb_remove_code_outputs PATH --retain -t tag`: clear outputs of not tagged cells
+
+```text
+Usage: nb_remove_code_outputs [OPTIONS] [PATHS]...
+
+  Clean code cells.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --blitz / --no-blitz          Clear all code cell outputs irrespective of
+                                other settings.
+  --retain / --no-retain        Retain or delete output by tag. By default, we
+                                delete (--no-retain)
+  -t, --tag TEXT                Specify tags. You can use this option multiple
+                                times.
+  --help                        Show this message and exit.
+  ```
+
 ## Remove cells by tag
 
 Remove cells by tag. One or more `-t` tags may be provided.

@@ -8,7 +8,7 @@ with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="tm351-nb-utils",
-    version="0.0.33",
+    version="0.0.34",
     long_description=long_description,  # Use README content as long description
     long_description_content_type="text/markdown",
     py_modules=["tm351_nb_utils", "updaters", "html2nb", "splitmerge", "collapser"],
@@ -47,5 +47,6 @@ setup(
         nb_cell_run_status = ou_nb_workflow_tools.cell_run_status_checker:cell_run_status_checker
         nb_html2myst_updater = ou_nb_workflow_tools.html2myst_converter:html_tag_replacer
         nb_remove_tagged_cell = ou_nb_workflow_tools.tagged_cell_remover:remove_tagged_cell
+        nb_remove_code_outputs = ou_nb_workflow_tools.code_cell_output_cleaner:code_output_cleaner
    """,
 )
