@@ -1,8 +1,16 @@
 from setuptools import setup
+import os
+
+# Read the contents of your README file
+this_directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
+    long_description = f.read()
 
 setup(
     name="tm351-nb-utils",
-    version="0.0.32",
+    version="0.0.33",
+    long_description=long_description,  # Use README content as long description
+    long_description_content_type="text/markdown",
     py_modules=["tm351_nb_utils", "updaters", "html2nb", "splitmerge", "collapser"],
     packages=["ou_nb_workflow_tools"],
     install_requires=[
@@ -38,5 +46,6 @@ setup(
         nb_split_sections = ou_nb_workflow_tools.section_splitter:section_splitter
         nb_cell_run_status = ou_nb_workflow_tools.cell_run_status_checker:cell_run_status_checker
         nb_html2myst_updater = ou_nb_workflow_tools.html2myst_converter:html_tag_replacer
+        nb_remove_tagged_cell = ou_nb_workflow_tools.tagged_cell_remover:remove_tagged_cell
    """,
 )

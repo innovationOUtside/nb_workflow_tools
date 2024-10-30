@@ -328,6 +328,27 @@ Options:
   --help                        Show this message and exit.
 ```
 
+## Remove cells by tag
+
+Remove cells by tag. One or more `-t` tags may be provided.
+
+```text
+Usage: nb_remove_tagged_cell [OPTIONS] [PATHS]...
+
+  Clean empty cells.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  --blitz / --no-blitz          Review all cell types (false if any explicit
+                                cell types are set)
+  --code / --no-code            Check code cell.
+  --md / --no-md                Check markdown cell.
+  --raw / --no-raw              Check raw cell.
+  -t, --tag TEXT                Specify tags. You can use this option multiple
+                                times.
+  --help                        Show this message and exit.
+```
+
 ## Autotag Figure Cells
 
 Autotag figure output code cells in pre-run notebooks (default tag: `nbval-figure`)
