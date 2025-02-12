@@ -48,5 +48,6 @@ setup(
         nb_html2myst_updater = ou_nb_workflow_tools.html2myst_converter:html_tag_replacer
         nb_remove_tagged_cell = ou_nb_workflow_tools.tagged_cell_remover:remove_tagged_cell
         nb_remove_code_outputs = ou_nb_workflow_tools.code_cell_output_cleaner:code_output_cleaner
-   """,
+        nb_check_code_cell_tags = ou_nb_workflow_tools.check_cells_tagged:check_code_cell_tags
+    """,
 )

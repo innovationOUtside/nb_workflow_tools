@@ -374,6 +374,26 @@ Options:
   --help                        Show this message and exit.
 ```
 
+## Check if code cells tagged appropriately
+
+Sometimes we may want to check that all code cells are tagged with a particular tag or one of one or more tags. For example:
+
+`nb_check_code_cell_tags notebooks/clear_output_cell_test.ipynb -t clearme`
+
+Multiple `-t` arguments may be passed.
+
+```text
+Usage: nb_check_code_cell_tags [OPTIONS] [PATHS]...
+
+  Check code cell tags. Report if cells not tagged or incorrectly tagged.
+
+Options:
+  --recursive / --no-recursive  Recursive search of directories.
+  -t, --tag TEXT                Specify tags. You can use this option multiple
+                                times.
+  --help                        Show this message and exit.
+```
+
 ## Autotag Figure Cells
 
 Autotag figure output code cells in pre-run notebooks (default tag: `nbval-figure`)
