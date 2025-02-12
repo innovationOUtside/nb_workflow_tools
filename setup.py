@@ -8,7 +8,10 @@ with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="tm351-nb-utils",
-    version="0.0.34",
+    author="Tony Hirst",
+    author_email="tony.hirst@gmail.com",
+    url="https://github.com/innovationOUtside/nb_workflow_tools/",
+    version="0.0.36",
     long_description=long_description,  # Use README content as long description
     long_description_content_type="text/markdown",
     py_modules=["tm351_nb_utils", "updaters", "html2nb", "splitmerge", "collapser"],
